@@ -2,7 +2,7 @@
 
 This source package accompanies *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*. It contains the ACEGP implementation, registered evaluation workflows and environment records. The primary population has 241 accessions and eight fixed regions; the validation population has 151 accessions and seven regions. Models were fitted and cross-validated separately within each population.
 
-Local preparation version: `20261028_v2_split2`. No repository has been created or uploaded. Original software uses the MIT licence in `LICENSE`; third-party terms are retained. The copyright-holder name, confirmed creators and permanent identifiers remain to be completed; see `LICENSE_STATUS.md`, `THIRD_PARTY_NOTICES.md` and `CITATION_STATUS.md`.
+Local preparation version: `20261028_v2_split2`. Original software uses the MIT licence in `LICENSE`; third-party terms are retained. The copyright-holder name, confirmed creators and permanent identifiers remain to be completed; see `LICENSE_STATUS.md`, `THIRD_PARTY_NOTICES.md` and `CITATION_STATUS.md`.
 
 ## Contents
 
