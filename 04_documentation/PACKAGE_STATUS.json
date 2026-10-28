@@ -1,0 +1,72 @@
+{
+  "status": "LOCAL_SPLIT_PREPARATION_WITH_PENDING_METADATA_AND_VALIDATION_RANDOM_INPUTS",
+  "version": "20261028_v2_split2",
+  "uploaded": false,
+  "scientific_analyses_executed": 0,
+  "training_runs": 0,
+  "main_inputs_present": {
+    "primary": [
+      241,
+      32670,
+      67985,
+      8
+    ],
+    "validation": [
+      151,
+      32666,
+      67104,
+      7
+    ]
+  },
+  "pending_validation_random_source": {
+    "sites": 4817083,
+    "samples": 151,
+    "matrix_files": 12,
+    "catalog_files": 1,
+    "orientation_arrays": 3
+  },
+  "public_repository_identifiers": null,
+  "licences_assigned": true,
+  "core_scientific_source_modified": false,
+  "curation_revision": 2,
+  "submission_tables_included": false,
+  "scientific_results_recomputed": false,
+  "active_paths": "package-relative reads; explicit external output",
+  "optional_generator_artifacts_included": false,
+  "folder_name": "GitHub_code",
+  "verifier_path_review": "20261028_v2_IO_ONLY",
+  "code_review": "20261028_source_review_synthetic_checks_no_training",
+  "source_structure_review": {
+    "date": "2026-10-28",
+    "public_Python_files": 26,
+    "responsibility_refactors": 3,
+    "format_only_files": 23,
+    "behavior_comparisons_passed": true,
+    "frozen_source_bytes_preserved": true
+  },
+  "execution_interface_review": {
+    "date": "2026-10-28",
+    "multi_fold_execution": true,
+    "explicit_resume": true,
+    "complete_output_summary": true,
+    "import_creates_output_directories": false,
+    "archived_prediction_tolerance_pp": 1e-08,
+    "full_training_reproduction_executed": false
+  },
+  "source_combined_version": "20261028_v2",
+  "companion_data_archive": "ACEGP_data_20261028_v2_split2.zip",
+  "source_files_changed_during_split": 0,
+  "data_files_changed_during_split": 0,
+  "authors_confirmed": false,
+  "numerical_reproduction_performed_during_split": false,
+  "code_licence": "MIT",
+  "licence_selection_confirmed": true,
+  "copyright_holder_confirmed": false,
+  "attribution_metadata_complete": false,
+  "third_party_terms_retained": true,
+  "third_party_redistribution_terms_fully_verified": false,
+  "public_release_ready": false,
+  "licensing_revision": "2026-10-28",
+  "software_licence_scope": "original software contributions only",
+  "data_licence_scope": "original data and results only; third-party rights excluded"
+}

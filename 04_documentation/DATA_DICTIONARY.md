@@ -1,0 +1,30 @@
+# Data dictionary
+
+## Populations, targets and coordinates
+`development` = primary population (241 accessions); `validation` = validation population (151 accessions). `sample_id` identifies accessions; `row_index`, `original_row`, `train_rows`, `test_rows` and SNP row arrays use zero-based indexing. CSV headers and source IDs are retained. The source phenotype detail in `02_data/prediction_inputs/validation_phenotype_source.csv` associates validation run IDs with accession names.
+`loss_SF` is control spikelet fertility minus heat-treatment fertility, in percentage points. RMSE and MAE use the same unit. Pearson r and Spearman rho are unitless. Positive delta_r means QTL-informed r minus genome-wide r. In selection summaries, reduced observed mean loss is genome-wide minus QTL-informed, in percentage points. For accession selection, rank predicted loss from low to high and retain 10% or 20%, rounding the selected count upward. Hit rate is the fraction of selected accessions also in the equally sized group with the lowest observed losses. Positive selection gain is mean observed loss under genome-wide selection minus mean observed loss under QTL-informed selection, in percentage points.
+QTL coordinates are 1-based closed intervals on IRGSP-1.0. Publication labels map to unchanged internal qid values in region_name_mapping.csv. Do not rename qid values before regenerating seeds.
+
+## Main genotype inputs
+`inputs/development_background.raw`: PLINK additive text, six metadata columns followed by 32,670 SNP columns; 241 accession rows. Headers encode marker identity and counted allele.
+`inputs/development_qtl.npy`: float32, accession x marker, shape 241 x 67,985. Sample order: development_qtl_sample_order.csv; marker order: development_qtl_markers.csv.
+`validation_inputs/background.npy`: float32, 151 x 32,666. Marker order: background_markers.csv.
+`validation_inputs/qtl.npy`: float32, 151 x 67,104. Marker order: qtl_markers.csv.
+`validation_inputs/sample_order.csv` supplies validation matrix row order. Model inputs use the counted A1 allele, encoded 0/1/2; missing values are NaN in NPY inputs and PLINK missing tokens in text. Load using the included revised_inputs.py.
+The frozen model config is retained byte-for-byte, including historical path strings for provenance. Public entry points use public_paths.py and revised_inputs.load_arrays to locate the packaged data; those historical strings are not accessed.
+
+## Designs and results
+The two `*_20x5.json` files specify 20 repeated fivefold partitions, with explicit IDs and row indices. Complete OOF prediction files contain one prediction per material per repeat: 4,820 primary records and 3,020 validation records. Genotype-quality subset predictions contain 2,920 and 2,840 rows. Genetic-group CV files pool the five held-out groups once per population. CV repeats/folds are data partitions, not biological replicates.
+`paired_repeat_results.csv` retains reported per-repeat metrics. `summary.json`, `COMPLETE.json` and statistics JSON files are saved historical summaries; statistics/development.json and validation.json also contain selection results and fold/repeat records. Current table-level outcomes are reported in Supplementary Data S1, submitted separately through the journal and not included in this repository package.
+The separately submitted Supplementary Data S1 retains 19 comparisons: 17 variance-corrected comparisons and two post hoc exact sign tests. The sign-test Holm family contains two populations; the corrected-test family contains two primary comparisons, and the secondary family contains 15 comparisons. These are separate families. Sign-test confidence intervals are not displayed. Do not combine all 19 tests for a new adjustment.
+
+## Random controls
+Each panel was evaluated once using the prespecified first fivefold split, not 20 repeats per panel. Primary full PLINK source: 241 samples x 4,817,964 candidate sites; BED/BIM/FAM are a single matched set. `raw_metadata_compressed.npz` gives the corresponding primary site metadata. Panel SNP row indices refer to this site order, not the QTL-only matrix.
+Validation panel indices refer to a separate 4,817,083-site catalog and common-imputation context, with A1-count arrays stored site x 151 samples. These input arrays and catalog are pending. Do not substitute the repeated-CV matrices or the primary catalog. Validation random results and repeated-CV results have distinct input contexts. The conditional tail fraction is (k+1)/101, where k counts random panels with r >= observed real-panel r. It is not a P value for the 20-repeat mean. Random sampling was constrained; retained SNP counts can concentrate near the allowed upper tolerance.
+
+## Anther data
+The featureCounts table contains the full 12-sample integer-count data, with gene annotation columns; BAM path strings in its column labels are historical sample labels, not required local files. sample_metadata.csv and ENA metadata provide the sample correspondence. The two genotypes are R996 and R4628, control/heat, three biological replicates per group.
+The full interaction test table covers all genes entering the statistical model; the 1,975 significant interaction genes and the 51 regional candidates are different sets. The regional set is 51 genes in the primary panel and 50 in the validation panel. Full enrichment results are retained, including nonsignificant terms. Global enrichment must not be presented as enrichment proved for the regional 51 genes. Functional annotations and literature experimental evidence are distinct evidence types, not proof of causal effects or prediction contribution.
+
+
+The 51-gene complete evidence table is the public combined view. Its redundant expression, annotation and SNP summary views were removed from this copy. Full gene-level DESeq2 tables, the count matrix and frozen SNP matrices retain the underlying numeric data. Dense GBLUP and shared-fit component OOF sources have been added from existing saved files; neither was refitted.

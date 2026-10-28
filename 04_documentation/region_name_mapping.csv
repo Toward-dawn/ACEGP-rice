@@ -1,0 +1,9 @@
+﻿Internal region ID,Publication name,Chromosome,Start bp,End bp,Primary panel,Validation panel,Source,Source URL
+row13,qSF1,1,34280000,34420000,Yes,Yes,Nubankoh et al. (2020),https://link.springer.com/article/10.1007/s00299-019-02477-z
+row18,qtl_1.1,1,38100000,38600000,Yes,Yes,Jagadish et al. (2010),https://acsess.onlinelibrary.wiley.com/doi/10.2135/cropsci2009.09.0516
+takai_tt2_01,RM1370-anchored region,6,28533451,31248787,Yes,Yes,Takai et al. (2020),https://www.tandfonline.com/doi/full/10.1080/1343943X.2020.1766363
+row07,qHt9a,9,18811120,19304852,Yes,Yes,Chen et al. (2008),https://www.chinaagrisci.com/CN/10.3864/j.issn.0578-1752.2008.02.001
+row10,qRSF9.2,9,22110508,22187677,Yes,No: source-material overlap rule,Hu et al. (2022),https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2022.983525/full
+czx4_01,qHTH10,10,9707331,10023739,Yes,Yes,Cao et al. (2019),https://doi.org/10.13271/j.mpb.017.002223
+new4_04,qSSR11-1,11,27173311,28173311,Yes,Yes,Nguyen et al. (2022),https://www.mdpi.com/2073-4425/13/12/2248
+row03,q12.1-associated region,12,24182554,25675740,Yes,Yes,Lafarge et al. (2017),https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0171254
