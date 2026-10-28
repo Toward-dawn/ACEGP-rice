@@ -1,7 +1,7 @@
 {
   "status": "LOCAL_SPLIT_PREPARATION_WITH_PENDING_METADATA_AND_VALIDATION_RANDOM_INPUTS",
   "version": "20261028_v2_split2",
-  "uploaded": false,
+ "repository_url": "https://github.com/Absurdgag/ACEGP-rice",
   "scientific_analyses_executed": 0,
   "training_runs": 0,
   "main_inputs_present": {
