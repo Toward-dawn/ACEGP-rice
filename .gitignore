@@ -1,0 +1,23 @@
+# Companion data are deposited separately.
+/02_data/
+/DATA_DOCUMENTATION/
+/DATA_README.md
+/DATA_README_中文.md
+/DATA_FILE_MANIFEST.csv
+/SHA256SUMS_DATA.txt
+
+# Local outputs and environments.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.Rhistory
+.RData
+.DS_Store
+Thumbs.db
+*.log
+/results/
+/runs/
+/outputs/
+
+/DATA_LICENSE.md
