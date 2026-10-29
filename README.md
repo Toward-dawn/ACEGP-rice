@@ -1,62 +1,55 @@
-# ACEGP: QTL-informed prediction of heat-induced fertility loss in rice
+# ACEGP: QTL-informed genomic prediction in rice
 
-This source package accompanies *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*. It contains the ACEGP implementation, registered evaluation workflows and environment records. The primary population has 241 accessions and eight fixed regions; the validation population has 151 accessions and seven regions. Models were fitted and cross-validated separately within each population.
+Code accompanying *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*.
 
-Local preparation version: `20261028_v2_split2`. Original software uses the MIT licence in `LICENSE`; third-party terms are retained. The copyright-holder name, confirmed creators and permanent identifiers remain to be completed; see `LICENSE_STATUS.md`, `THIRD_PARTY_NOTICES.md` and `CITATION_STATUS.md`.
+ACEGP combines 16 learners to compare genome-wide and QTL-informed marker representations. Models are fitted and cross-validated separately in the primary population (241 accessions, eight fixed regions) and validation population (151 accessions, seven regions). Anther expression analyses provide biological context for the QTL regions.
 
-## Contents
+Repository: https://github.com/Toward-dawn/ACEGP-rice
 
-- `01_code/ACEGP`: model implementation, input loading, repeated CV, model comparisons, region ablation, quality subsets, genetic-group CV and result summaries.
-- `01_code/random_panels`: fixed-panel model workflows and optional panel-generation methods.
-- `01_code/anther`: expression and functional analysis, gene-to-SNP mapping and workspace preparation.
-- `01_code/statistics`: the post hoc exact sign tests.
-- `01_code/environment`: prediction dependency versions and anther environment records.
-- `04_documentation`: execution guide, data definitions, dependency inventory and source-name mappings.
+## Code and companion data
 
-All 50 original code and environment files are unchanged from the combined v2 package. Frozen scientific sources, configuration values, region IDs and seed namespaces retain their original bytes. Internal `development` labels mean the primary population.
+This code version is `20261029_v3`. It uses the registered validation input version `validation_reconstructed_20261029` for repeated CV, fixed random panels, model comparisons and sensitivity analyses. Primary inputs and results are unchanged. The validation matrices are a protocol reconstruction, not a byte-identical recovery of the historical imputation output.
 
-## Add the companion data
-
-The local companion archive is `ACEGP_data_20261028_v2_split2.zip`. Its public DOI has not been assigned. Extract its contents directly into this repository root, without adding an extra enclosing folder. The resulting layout must be:
+The companion data must be placed at `02_data/` beside `01_code/`. Data files are excluded from Git tracking. Do not combine this code with the old `20261028_v2_split2` data archive. The required files and hashes are recorded in `FILE_MANIFEST.csv` and `04_documentation/VALIDATION_DATA_VERSION.json`. See [input versions](04_documentation/PENDING_INPUTS.md) for the dataset layout and optional panel-generation inputs, and [data definitions](04_documentation/DATA_DICTIONARY.md) for units and identifiers.
 
 ```text
-repository-root/
+ACEGP-rice/
   01_code/
-  02_data/
+  02_data/                 # companion data
   04_documentation/
-  DATA_DOCUMENTATION/
   FILE_MANIFEST.csv
   CODE_FILE_MANIFEST.csv
-  DATA_FILE_MANIFEST.csv
   SHA256SUMS_CODE.txt
-  SHA256SUMS_DATA.txt
 ```
 
-The archives have no conflicting file paths. `02_data` is intentionally excluded from Git tracking. Moving the data to an arbitrary external directory is not supported by the frozen path layout.
+## Installation and checks
 
-## Environment and checks
-
-Use Linux/POSIX for the prediction runner; it uses `fcntl`. The historical prediction package versions are pinned in `01_code/environment/prediction_requirements.txt`. This preparation did not install or test a new complete environment. The anther R environment is recorded separately under `01_code/environment/anther`.
-
-After adding the data, these commands only check files and the environment:
+The prediction runner requires Linux/POSIX and the package versions in `01_code/environment/prediction_requirements.txt`. Install them in a dedicated Python environment. Anther R dependencies are recorded separately in `01_code/environment/anther/`.
 
 ```bash
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population primary --check
-python -B 01_code/anther/prepare_workspace.py --check
+python -m pip install -r 01_code/environment/prediction_requirements.txt
+python -B 01_code/verify_release.py --code-only
+# After adding the matching companion data:
+python -B 01_code/verify_release.py
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --check
+python -B 01_code/ACEGP/run_analysis.py --analysis validation-random --check
 ```
 
-The prediction check examines the complete dependency inventory, including saved comparison results. It requires the full current companion data package. A nonzero exit code can report missing Python packages or an unsupported operating system even when all input hashes match. Consult `04_documentation/CODE_GUIDE.md` for analysis commands; those commands can train models or recompute results and were not run during packaging. Outputs must be written outside this repository.
+These checks do not train models. The hash-only verifier also works on Windows; execution requires Linux/POSIX. `--check` reports dependency or platform differences separately from file-integrity failures.
 
-## Coverage and pending inputs
+## Run an analysis
 
-Included data cover the two populations' repeated-CV inputs and saved results, secondary comparisons, primary random controls and anther analyses. Both populations' 100 fixed random panels and saved results are included. Validation random-control execution additionally needs 16 missing files: 12 common-imputation chromosome matrices, one site catalog and three allele-orientation arrays. The archived repeated-CV matrices cannot replace them. See `04_documentation/PENDING_INPUTS.md`.
+The following commands train models. Use a new output directory outside the repository.
 
-Optional regeneration of validation random panels needs additional historical observed-genotype and candidate-bank inputs. Reusing the supplied fixed panels does not require their regeneration.
+```bash
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --all-folds --output /path/to/validation-cv
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --summarize --output /path/to/validation-cv
+```
 
-## Verification and citation
+The runner uses the fixed partitions, region IDs and seeds. It checks newly computed predictions against the matching archived outputs. Complete commands for model comparisons, region ablation, genetic-group CV, quality subsets, random panels, statistics and anther analyses are in [CODE_GUIDE.md](04_documentation/CODE_GUIDE.md).
 
-`CODE_FILE_MANIFEST.csv` inventories files in this code package. `SHA256SUMS_CODE.txt` also covers that manifest. `FILE_MANIFEST.csv` is the combined code-and-data payload inventory used by the existing runner; entries under `02_data` become present after the companion archive is extracted. The combined inventory excludes its own file and the code package's inventory/checksum files to avoid circular checksums.
+## Version and attribution
 
-This preparation checked byte identity, archive integrity and path assembly. It did not retrain models, recalculate scientific results or demonstrate complete numerical reproduction. No trained weights or runtime dependencies were generated during this step. Citation metadata will be completed when creators and repository identifiers are confirmed; MIT is already selected for original software.
+The frozen model libraries and configuration are unchanged. This update connects the public entry points to the accepted reconstructed inputs and results; it does not reselect regions or tune model parameters. The local integration checks are described in [CURATION_NOTES.md](04_documentation/CURATION_NOTES.md). A complete training rerun of this packaged interface has not been performed during packaging.
 
-Journal tables and Supplementary Data S1 remain separate submission files. They are not duplicated here.
+Original software uses the MIT terms in [LICENSE](LICENSE). The copyright-holder field still requires confirmation; see [LICENSE_STATUS.md](LICENSE_STATUS.md). Original data and results use CC BY 4.0; third-party materials retain their source terms. Citation fields and release identifiers are tracked in [CITATION_STATUS.md](CITATION_STATUS.md). Journal tables and Supplementary Data S1 are separate submission files.

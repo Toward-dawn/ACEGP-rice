@@ -27,7 +27,11 @@ def load_primary_matrices(root, sample_ids):
 
 def load_validation_matrices(root):
     receipt = json.loads((root / "validation_inputs/INPUT_ACCEPTANCE.json").read_text())
-    assert receipt["state"] == "PASS_UNIFORM_GT_INPUTS_AND_MASKED_QUALITY"
+    from validation_release import DATA_VERSION, verify_validation_release
+
+    assert receipt["state"] == "PASS_REBUILT_VALIDATION_INPUTS"
+    assert receipt["data_version"] == DATA_VERSION
+    verify_validation_release(Path(root).parents[1])
     order = pd.read_csv(root / "validation_inputs/sample_order.csv", dtype=str).sample_id.tolist()
     genome = np.asarray(np.load(root / "validation_inputs/background.npy", mmap_mode="r"), float)
     qtl = np.asarray(np.load(root / "validation_inputs/qtl.npy", mmap_mode="r"), float)

@@ -39,14 +39,14 @@ VALIDATION_DATA_ROOT = RANDOM_ROOT / "validation"
 PREDICTION_INPUT_ROOT = DATA_ROOT
 METADATA_ROOT = VALIDATION_DATA_ROOT / "metadata"
 SAVED_RESULTS_ROOT = VALIDATION_DATA_ROOT / "results"
-PENDING_INPUT_ROOT = VALIDATION_DATA_ROOT / "PENDING_common_genotypes"
+GENOTYPE_ROOT = VALIDATION_DATA_ROOT / "genotypes"
 from acegp_uniform import fit_holdout, stable_seed, CODE_HASH, MODELS
 import statistical_reporting as st
 
 REG = json.loads((METADATA_ROOT / "COMMON_CONTEXT_MODEL_REGISTRATION.json").read_text())
 OUTPUT_ROOT = None
-CATALOG_PATH = PENDING_INPUT_ROOT / "observed_catalog/raw_metadata_validation151.npz"
-MATRIX_ROOT = PENDING_INPUT_ROOT / "common_final_matrix"
+CATALOG_PATH = GENOTYPE_ROOT / "raw_metadata_validation151.npz"
+MATRIX_ROOT = GENOTYPE_ROOT
 
 
 def read(path):
@@ -69,49 +69,20 @@ def save(path, value):
 
 
 def verified_sources():
-    sources = {
-        "src/acegp_uniform.py": CODE / "src/acegp_uniform.py",
-        "inputs/validation_20x5.json": PREDICTION_INPUT_ROOT / "inputs/validation_20x5.json",
-        "inputs/model_config.json": PREDICTION_INPUT_ROOT / "inputs/model_config.json",
-        "validation_inputs/background_markers.csv": PREDICTION_INPUT_ROOT
-        / "validation_inputs/background_markers.csv",
-        "inputs/validation_regions.csv": PREDICTION_INPUT_ROOT / "inputs/validation_regions.csv",
-        "common_final_matrix/COMPLETE.json": PENDING_INPUT_ROOT / "historical_COMPLETE.json",
-        "common_context_model_metadata/MAPPING_ACCEPTANCE.json": METADATA_ROOT
-        / "MAPPING_ACCEPTANCE.json",
-        "random_validation7_constrained_joint_v2/output/acceptance.json": METADATA_ROOT
-        / "panel_acceptance.json",
-    }
-    for label, path in sources.items():
-        assert sha(path) == REG["input_file_SHA256"][label], label
-    assert CODE_HASH == REG["fitter_CODE_HASH"] and len(MODELS) == 16
+    from validation_release import verify_validation_release
+
+    registration = verify_validation_release(PACKAGE, include_raw=True)
+    assert CODE_HASH == registration["fitter_CODE_HASH"] and len(MODELS) == 16
     mapping = read(METADATA_ROOT / "MAPPING_ACCEPTANCE.json")
-    assert mapping["state"] == "PASS_FROZEN_REAL7_AND_BACKGROUND_METADATA_MAPPING_TO_COMMON_CATALOG"
     assert mapping["real_region_unique_raw_SNPs"] == 67104
     assert mapping["marker_lists"]["background"]["catalog_positions_found"] == 32666
-    order = read(METADATA_ROOT / "SAMPLE_ORDER_ACCEPTANCE.json")
-    assert order["state"] == "PASS_151_SAMPLE_ORDER_IDENTICAL_COMMON_GT_AND_OLD_VALIDATION_INPUT"
-    matrix = read(PENDING_INPUT_ROOT / "historical_COMPLETE.json")
-    assert matrix["state"] == "PASS_12_CHROMOSOME_COMMON_GT_MATRIX_ALL_KNOWN_OBSERVED_PRESERVED"
-    assert matrix["sites"] == 4817083 and matrix["samples"] == 151
-    for chrom, entry in enumerate(matrix["records"], 1):
-        assert sha(MATRIX_ROOT / f"chr{chrom}/A1_GT.npy") == entry["matrix_sha256"]
-    random = read(METADATA_ROOT / "panel_acceptance.json")
-    assert random["state"] == "PASS_100_VALIDATION7_CONSTRAINED_PANELS_ALL_FROZEN_METADATA_GATES"
-    assert random["panels"] == 100 and random["regions_per_panel"] == 7
-    quality_path = METADATA_ROOT / "FIVE_SEED_ACCEPTANCE.json"
-    assert quality_path.exists(), "All five independent quality audits are required"
-    quality = read(quality_path)
-    assert quality["state"] == "PASS_ALL_FIVE_COMMON_CONTEXT_QUALITY_GATES_INDEPENDENTLY_AUDITED"
-    assert len(quality["seeds"]) == 5 and all(row["gate_passed"] for row in quality["seeds"])
+    panel_record = read(METADATA_ROOT / "panel_acceptance.json")
+    assert panel_record["panels"] == 100 and panel_record["regions_per_panel"] == 7
     return {
-        "source_SHA256": {label: REG["input_file_SHA256"][label] for label in sources},
-        "quality_acceptance_sha256": sha(quality_path),
-        "sample_order_acceptance_sha256": sha(METADATA_ROOT / "SAMPLE_ORDER_ACCEPTANCE.json"),
+        "data_version": registration["data_version"],
+        "registration_sha256": sha(PACKAGE / "04_documentation/VALIDATION_DATA_VERSION.json"),
         "fitter_CODE_HASH": CODE_HASH,
-        "all_12_matrix_SHA256": {
-            str(i): x["matrix_sha256"] for i, x in enumerate(matrix["records"], 1)
-        },
+        "historical_quality_assessment_retained": True,
     }
 
 
@@ -240,9 +211,12 @@ def fold(kind, number, fi):
         return
     start = time.monotonic()
     accepted = read(SAVED_RESULTS_ROOT / "INPUT_ACCEPTANCE.json")
-    assert accepted["state"] == "PASS_SAME_CONTEXT_REAL_RANDOM_AND_FIVE_SEED_QUALITY"
+    from validation_release import DATA_VERSION
+
+    assert accepted["state"] == "PASS_REBUILT_SAME_CONTEXT_REAL_RANDOM"
+    assert accepted["data_version"] == DATA_VERSION
     quality = METADATA_ROOT / "FIVE_SEED_ACCEPTANCE.json"
-    assert sha(quality) == accepted["quality_acceptance_sha256"]
+    assert sha(quality) == accepted["historical_quality_acceptance_sha256"]
     chrom, pos, key = catalog()
     bg_rows = marker_rows(key)
     g = load_gt_rows(bg_rows, chrom)

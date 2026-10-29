@@ -82,7 +82,8 @@ def task(cohort, ri, fi):
                 "ACEGP_withoutBlock": result["QTL_informed"],
             }
         )
-        for condition in ["Genome_plus_QTL"]:
+        conditions = ["Genome_only", "Genome_plus_QTL"] if cohort == "validation" else ["Genome_plus_QTL"]
+        for condition in conditions:
             at = q[tr] if condition != "Genome_only" else np.empty((len(tr), 0))
             ax = q[te] if condition != "Genome_only" else np.empty((len(te), 0))
             cache = base.prepare_inner_fold_cache(condition, g[tr], at, folds, config)
@@ -96,16 +97,17 @@ def task(cohort, ri, fi):
                     model, condition, outer, y, hyper, seed + 7000
                 )
                 audit["learner_controls"][label] = {"hyper": hyper, "training_inner_OOF_r": score}
-    inherited_path = RESULT_ROOT / "model_comparisons" / cohort / "all_oof_predictions.csv"
-    inherited = read_saved_fold("model_comparisons", cohort, ri, fi, split["test_ids"])
-    assert inherited.sample_id.tolist() == out.sample_id.tolist()
-    for label in ["GBLUP_GW", "RKHS_GW"]:
-        out[label] = inherited[label].to_numpy()
-        audit["learner_controls"][label] = {
-            "reused_unchanged_GW_control": True,
-            "source": str(inherited_path),
-            "source_sha256": sha(inherited_path),
-        }
+    if cohort == "development":
+        inherited_path = RESULT_ROOT / "model_comparisons" / cohort / "all_oof_predictions.csv"
+        inherited = read_saved_fold("model_comparisons", cohort, ri, fi, split["test_ids"])
+        assert inherited.sample_id.tolist() == out.sample_id.tolist()
+        for label in ["GBLUP_GW", "RKHS_GW"]:
+            out[label] = inherited[label].to_numpy()
+            audit["learner_controls"][label] = {
+                "reused_unchanged_GW_control": True,
+                "source": str(inherited_path),
+                "source_sha256": sha(inherited_path),
+            }
     assert np.isfinite(out[MODELS].to_numpy()).all()
     out.to_csv(folder / "predictions.csv", index=False)
     atomic(folder / "choices.json", audit)

@@ -42,7 +42,8 @@ def pair_test(cohort, first, second, frame, description):
         for fi in range(1, 6):
             d = frame[(frame["repeat"] == ri) & (frame["fold"] == fi)]
             s = schedule["repeats"][ri - 1]["folds"][fi - 1]
-            assert d.sample_id.tolist() == s["test_ids"]
+            assert d.sample_id.is_unique and set(d.sample_id) == set(s["test_ids"])
+            d = d.set_index("sample_id", drop=False).loc[s["test_ids"]].reset_index(drop=True)
             y = ids.loc[d.sample_id].loss_SF.to_numpy(float)
             q.append(st.metrics(y, d[first].to_numpy(float))["pearson_r"])
             g.append(st.metrics(y, d[second].to_numpy(float))["pearson_r"])

@@ -1,11 +1,11 @@
-# Citation status
+# Citation information
 
-Working software title: **ACEGP: QTL-informed prediction of heat-induced spikelet fertility loss in rice**.
+Software: **ACEGP: QTL-informed genomic prediction in rice**.
 
-Preparation version: `20261028_v2_split2`, derived from the frozen combined v2 release. This is a local packaging identifier, not a published release date or DOI.
+Repository: https://github.com/Toward-dawn/ACEGP-rice
 
-Confirmed software creators and their order, affiliations, ORCIDs, the public contact and version-specific archive DOI remain to be completed. A `CITATION.cff` file will be added after those fields are confirmed. The local metadata draft is kept outside the upload package so that placeholders are not mistaken for valid citation metadata.
+Code version: `20261029_v3`. Companion validation input version: `validation_reconstructed_20261029`.
 
-The associated manuscript title is *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*. No publication DOI is asserted.
+Associated manuscript: *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*.
 
-Repository: https://github.com/Absurdgag/ACEGP-rice
+The software creator list and order have not been confirmed. No author list, ORCID, software DOI, dataset DOI or publication DOI is invented. `CITATION.cff` should be added once the software creators are confirmed. Publication and dataset identifiers should then be added to the repository and deposit records.

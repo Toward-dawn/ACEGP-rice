@@ -1,0 +1,26 @@
+{
+  "python_syntax_files": 46,
+  "frozen_model_source_files_unchanged": 16,
+  "registered_CV_seeds_verified": 100,
+  "control_call_traces_match": {
+    "validation_accepted_rerun": true,
+    "primary_previous_interface": true
+  },
+  "paired_statistical_order_invariance_synthetic": true,
+  "registered_validation_files_verified": 256,
+  "validation_loader_shapes_and_region_order": true,
+  "completed_outer_tasks_checked_against_current_references": 1010,
+  "completed_prediction_files_checked": 1610,
+  "statistical_records_and_families": {
+    "records": 19,
+    "families": [
+      2,
+      15,
+      2
+    ],
+    "validation_positive_repeats": 19
+  },
+  "state": "PASS_INTEGRATION_WITHOUT_TRAINING",
+  "model_training_calls": 0,
+  "scientific_analyses_executed": 0
+}

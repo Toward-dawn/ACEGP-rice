@@ -61,7 +61,7 @@ def main():
                 "repeat_differences": delta,
             }
         )
-    assert [r["positive"] for r in signs] == [20, 18]
+    assert [r["positive"] for r in signs] == [20, 19]
     previous = Fraction(0)
     for rank, index in enumerate(sorted(range(2), key=lambda i: signs[i]["raw_p"])):
         adjusted = max(
@@ -71,7 +71,7 @@ def main():
         signs[index]["holm_fraction"] = str(adjusted)
         previous = adjusted
     assert signs[0]["raw_p"] == 1.9073486328125e-6 and signs[0]["holm_p"] == 3.814697265625e-6
-    assert signs[1]["raw_p"] == signs[1]["holm_p"] == 0.0004024505615234375
+    assert signs[1]["raw_p"] == signs[1]["holm_p"] == 0.0000400543212890625
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(signs, indent=2), encoding="utf-8")
 

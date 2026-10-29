@@ -177,7 +177,7 @@ def summarize(args, population, package, output, worker, tasks):
 
 
 def run_statistical_comparisons(package, output):
-    """Report the registered two-comparison and 15-comparison families."""
+    """Report the two t-test families and the separate two-population sign tests."""
     import remote_statistics as primary_statistics
     import remote_secondary_statistics as secondary_statistics
     import reporting_wrappers
@@ -218,6 +218,11 @@ def run_statistical_comparisons(package, output):
     )
     primary_statistics.atomic(
         primary_statistics.OUT / "secondary_models_family.json", secondary_family
+    )
+    subprocess.run(
+        [sys.executable, "-B", str(package / "01_code/statistics/exact_sign_tests.py"),
+         "--output", str(primary_statistics.OUT / "sign_tests.json")],
+        check=True,
     )
 
 

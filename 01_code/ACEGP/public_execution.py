@@ -43,17 +43,13 @@ def check_inputs(package, analysis):
             missing.append(relative)
         elif relative not in manifest or sha256(path) != manifest[relative]["SHA256"]:
             changed.append(relative)
-    if analysis == "validation-random":
-        pending = package / "02_data/random_controls/validation/PENDING_common_genotypes"
-        with (pending / "expected_files.csv").open(encoding="utf-8-sig", newline="") as stream:
-            rows = list(csv.DictReader(stream))
-        for row in rows:
-            relative = row["Expected relative file"]
-            path = pending / relative
-            if not path.is_file():
-                missing.append(path.relative_to(package).as_posix())
-            elif sha256(path) != row["Historical SHA256"]:
-                changed.append(path.relative_to(package).as_posix())
+    if not (missing or changed):
+        from validation_release import verify_validation_release
+
+        try:
+            verify_validation_release(package, include_raw=analysis == "validation-random")
+        except ValueError as error:
+            changed.append(str(error))
     versions = {}
     errors = []
     requirements = package / "01_code/environment/prediction_requirements.txt"

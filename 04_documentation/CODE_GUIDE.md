@@ -1,74 +1,76 @@
-# Code guide
+# Execution guide
 
-Extract the companion data archive into the code root before using these commands. The code root must contain both `01_code` and `02_data`. This split delivery does not change the existing source files or execution procedures.
+## Input and output rules
 
-## Source organization
+Use the companion data matching code version `20261029_v3`. Extract `02_data/` at the repository root. Internal `development` labels refer to the primary population. All outputs must be outside the repository. Prediction fitting requires Linux/POSIX, the pinned Python dependencies and sufficient memory and disk for the frozen cache settings.
 
-| File | Responsibility |
-| --- | --- |
-| `ACEGP/run_analysis.py` | Validate options, dispatch registered tasks and select the summary procedure. |
-| `ACEGP/public_execution.py` | Check dependencies, record run identity and verify completed tasks before reuse. |
-| `ACEGP/public_results.py` | Compare new predictions with the archived study and summarize complete OOF vectors. |
-| `ACEGP/run_cv_fold.py` | Fit one saved outer fold using the frozen model implementation. |
-| `ACEGP/revised_inputs.py` | Read matrices, check sample order and dimensions, and assign columns to fixed regions. |
-| `ACEGP/public_paths.py` | Resolve packaged inputs and explicit external outputs. |
-| `ACEGP/remote_*.py` | Apply the registered analysis procedures. Call `configure_output(path)` before execution. |
-| `ACEGP/src` and `ACEGP/legacy_model_snapshot` | Provide the 16 byte-preserved scientific source files. |
-| `anther/prepare_workspace.py` | Copy prepared anther inputs and results to an external workspace. |
-
-Historical filenames and `development` labels are retained where they form part of the frozen implementation. `development` means the primary population. The fitter CODE_HASH includes all ten snapshot Python files. Do not rename or edit those files.
-
-## Preflight
-
-Run from the package root. The task runner requires Linux/POSIX (`fcntl`) and the versions in `01_code/environment/prediction_requirements.txt`.
-
-```
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population primary --check
+```bash
+python -B 01_code/verify_release.py --code-only
+python -B 01_code/verify_release.py
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --check
 python -B 01_code/ACEGP/run_analysis.py --analysis validation-random --check
 ```
 
-`--check` verifies every packaged code and data file in the dependency inventory against FILE_MANIFEST.csv, checks pinned Python packages, and reports the platform. It does not import fitters or create an output directory. Exit status is 0 only when all checks pass. Validation random controls additionally require the 16 pending files to match their historical SHA256 values. Optional panel-generation inputs are listed separately in GENERATION_REFERENCE.md.
+The hash verifier imports no model code. `--check` also checks the environment and registered validation input version without fitting models or creating analysis output. Optional historical panel-generation inputs are not required for the fixed-panel analyses.
 
-## Repeated CV: execute, continue, summarize
+## Repeated cross-validation
 
-The first two commands below fit models. The third reads completed outputs only.
-
-```
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population primary --all-folds --output /path/to/primary-run
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population primary --all-folds --resume --output /path/to/primary-run
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population primary --summarize --output /path/to/primary-run
+```bash
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --all-folds --output /path/to/validation-cv
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --summarize --output /path/to/validation-cv
 ```
 
-`--all-folds` uses the 20 registered repeats and five folds per repeat. Without it, `--repeat` and `--fold` select one task. Use `--resume` to append further tasks to the same run. A run records its analysis, population, quality-subset choice and release-manifest hash. Mismatched runs cannot be combined. Completed tasks are skipped only after their output hashes pass verification. An incomplete task without a valid receipt is retained and rejected; use a new run directory rather than overwriting it. One runner may write to a run directory at a time.
+Use `--population primary` for the primary population. `--all-folds` runs the 20 × 5 registered tasks. `--repeat R --fold F` selects one task. `--resume` continues a matching run and verifies completed task receipts before skipping them. Incomplete tasks without valid receipts are retained and rejected; use a new output directory.
 
-Each new fold is checked against the archived predictions by sample ID, partition, region or panel, and model column. Absolute differences above 1e-8 percentage points stop the run. The check never replaces computed predictions with historical values. This tolerance follows the existing workers' prediction checks; it is not a significance threshold or an expected CV effect. Summary requires all registered tasks and rechecks their outputs. Correlations are calculated from complete OOF vectors within each repeat; SD is the sample SD across 20 repeats.
+The run identity records the analysis, population, quality subset and release-manifest hash. Predictions are checked by sample ID, partition, model and region or panel. Absolute differences above 1e-8 percentage points stop the run; the checker never replaces newly fitted values with saved predictions. This is a numerical comparison tolerance, not a statistical threshold. Summaries require complete OOF vectors for every repeat and report sample SD across repeats.
 
-`run_cv_fold.py` remains available as the original low-level, one-fold fitter. It requires a new or empty output directory and does not create run receipts. Use `run_analysis.py` for the checked execution and summary workflow.
+`run_cv_fold.py` is the one-fold fitting entry. Prefer `run_analysis.py` for task receipts, continuation, reference checks and summaries.
 
-## Other analyses
+## Model comparisons and sensitivity analyses
 
-`controls` and `ablation` use the same `--all-folds`, `--resume` and `--summarize` options. They default to primary; use `--population validation` for validation. `quality` uses validation only and requires a separate run directory for `--subset 146` and `--subset 142`. It retains the registered IDs and restricts the original 151-sample folds to those rows. `genetic-group --all-folds` executes the five saved genetic groups; `--group` selects one group. Existing scientific workers provide the controls, ablation, quality and genetic-group summaries.
+Use a separate output directory for every analysis and subset:
 
-Random panels use prespecified repeat 1 only:
-
+```bash
+python -B 01_code/ACEGP/run_analysis.py --analysis controls --population validation --all-folds --output /path/to/validation-controls
+python -B 01_code/ACEGP/run_analysis.py --analysis controls --population validation --summarize --output /path/to/validation-controls
+python -B 01_code/ACEGP/run_analysis.py --analysis ablation --population validation --all-folds --output /path/to/validation-ablation
+python -B 01_code/ACEGP/run_analysis.py --analysis ablation --population validation --summarize --output /path/to/validation-ablation
+python -B 01_code/ACEGP/run_analysis.py --analysis quality --subset 146 --all-folds --output /path/to/quality146
+python -B 01_code/ACEGP/run_analysis.py --analysis quality --subset 146 --summarize --output /path/to/quality146
+python -B 01_code/ACEGP/run_analysis.py --analysis genetic-group --population validation --all-folds --output /path/to/validation-groups
+python -B 01_code/ACEGP/run_analysis.py --analysis genetic-group --population validation --summarize --output /path/to/validation-groups
 ```
-python -B 01_code/ACEGP/run_analysis.py --analysis primary-random --all-panels --all-folds --output /path/to/primary-random-run
-python -B 01_code/ACEGP/run_analysis.py --analysis primary-random --all-panels --summarize --output /path/to/primary-random-run
+
+Repeat quality analysis with `--subset 142` and a different output directory. Both subsets retain their original independently selected members and restrict the original 151-accession folds to those members. Genetic-group CV uses the original five groups; it does not recluster the reconstructed genotypes.
+
+Validation controls refit GBLUP and RKHS for both genome-only and genome-plus-QTL representations, together with ACEGP without block features. Primary controls retain the existing workflow and reuse their unchanged archived genome-only control predictions. The frozen fitting algorithms, grids and seeds are unchanged.
+
+## Fixed random panels
+
+```bash
+python -B 01_code/ACEGP/run_analysis.py --analysis validation-random --all-panels --all-folds --output /path/to/validation-random
+python -B 01_code/ACEGP/run_analysis.py --analysis validation-random --all-panels --summarize --output /path/to/validation-random
 ```
 
-`primary-random` uses panels 1–100. `validation-random` uses panel 0 for the real seven-region panel and panels 1–100 for random panels; `--all-panels` includes all 101. `--panel N --all-folds` executes the five folds for one panel, and `--panel N --summarize` summarizes that panel. These analyses use the fixed supplied panels; no panels are regenerated or selected. Validation random controls remain blocked until their historical inputs are supplied and verified.
+`validation-random` includes real panel 0 and random panels 1–100. Use `--analysis primary-random` for the 100 primary panels. `--panel N --all-folds` selects one panel. All random-panel comparisons use prespecified repeat 1, with five folds per panel. They do not perform 20 repeats per panel or generate new panels.
 
-`--analysis statistics --output /path/to/statistics-run` recalculates the original 17 comparisons from the packaged historical predictions, not from a new run directory. Omit `--population`. The two primary corrected comparisons and 15 secondary comparisons retain separate Holm families. `01_code/statistics/exact_sign_tests.py` implements the two post hoc sign tests as a separate family. Final saved files are primary_Holm_family.json, secondary_models_family.json and sign_tests_as_reported.json. secondary_Holm_family.json is an earlier incomplete record.
+## Statistics
 
-## Anther workspace
-
+```bash
+python -B 01_code/ACEGP/run_analysis.py --analysis statistics --output /path/to/statistics
 ```
+
+This command reads the matching archived predictions, not a separate new training-run directory. It reports 17 variance-corrected comparisons and two post hoc exact sign tests. Holm correction remains separate for the two primary comparisons, 15 secondary comparisons and two sign tests. Outputs include `statistics/primary_Holm_family.json`, `statistics/secondary_models_family.json` and `statistics/sign_tests.json`. The complete accepted 19-record table is in the companion data at `02_data/prediction_results/statistics/statistical_comparisons_19.csv`. CSV row order is aligned to the registered sample IDs before fold-level tests. CV repeats and folds are partitions, not biological replicates.
+
+## Anther analyses
+
+```bash
 python -B 01_code/anther/prepare_workspace.py --check
-python -B 01_code/anther/prepare_workspace.py --output /path/to/new-anther-work
+python -B 01_code/anther/prepare_workspace.py --output /path/to/anther-work
 ```
 
-Preparing the workspace copies files only. `review_anther.R` performs expression and functional analyses, `map_gene_snps.py` maps genes to existing genotype inputs, and `plot_review.R` reads saved gene and enrichment tables. Mapping runs only through its main entry point; importing the module does not create directories or start an analysis.
+Workspace preparation copies existing inputs. `review_anther.R` performs expression and functional analyses, `map_gene_snps.py` maps genes to markers and `plot_review.R` plots saved results. These sources and data are unchanged by the validation update.
 
-## Reproduction status
+## Verification scope
 
-This release was checked by source comparisons, input hashes, archived-output validation and synthetic execution tests. Models and research analyses were not rerun during packaging. Numerical reproduction in a supported execution environment remains to be demonstrated; the validation random-control inputs are still pending. The result checks above reject divergent new outputs rather than certifying them as reproduced.
+The reconstructed-input analyses were completed and independently audited before this packaging update. Packaging checks cover source identity, registered input hashes, saved prediction consistency, execution routing, syntax and synthetic worker tests. No training or new scientific analysis was run during packaging. A complete rerun of this packaged interface remains a separate execution; the checks above must not be described as a new training reproduction.

@@ -1,17 +1,20 @@
-# Pending validation inputs
+# Input versions and optional inputs
 
-The 16 files required to rerun the **validation fixed-split random-control comparison** are listed, with historical SHA256 values, in:
+## Validation prediction inputs
 
-`02_data/random_controls/validation/PENDING_common_genotypes/expected_files.csv`
+Version `validation_reconstructed_20261029` replaces the historical validation prediction inputs. Its 4,817,083 sites, 151-accession order, counted A1 alleles and frozen panel definitions are retained. The 12 chromosome matrices differ from the historical imputation hashes and are explicitly registered as reconstructed inputs. Their new hashes are not substitutions for the historical recovery receipts.
 
-- `common_final_matrix/chr1/A1_GT.npy` through `chr12/A1_GT.npy`: 12 chromosome matrices, with sites as rows and 151 accessions as columns.
-- `observed_catalog/raw_metadata_validation151.npz`: the 4,817,083-site catalog.
-- `common_final_matrix/a1_is_ref.npy`, `reference_byte.npy` and `alternate_byte.npy`: three allele-orientation arrays.
+Required companion-data paths:
 
-These relative names are rooted inside `PENDING_common_genotypes`, as expected by the current runtime. The expected-file list and historical acceptance records are receipts; they contain no genotype matrix. No placeholder arrays have been created.
+- `02_data/random_controls/validation/genotypes/chr1/A1_GT.npy` through `chr12/A1_GT.npy`: sites × 151 accessions, uint8 A1 counts.
+- `02_data/random_controls/validation/genotypes/raw_metadata_validation151.npz`: the site catalog.
+- `02_data/random_controls/validation/genotypes/a1_is_ref.npy`, `reference_byte.npy`, `alternate_byte.npy`: allele orientation.
+- `02_data/prediction_inputs/validation_inputs/background.npy` and `qtl.npy`: float64 arrays, 151 × 32,666 and 151 × 67,104, extracted in the frozen marker order. Their SHA256 values match the arrays used in the accepted supporting rerun.
 
-Rebuilt files must be compared with the historical hashes and sample/site/allele order. A rebuilt file whose hash differs must not be silently labelled the original input or accepted by replacing the expected hash. Investigate the discrepancy separately. This preparation does not rebuild or analyse them.
+All validation prediction branches use this version. The supplied 100 random panels are retained; prediction does not require panel regeneration. The complete local reconstructed source exists. Distribution of the companion dataset is held for author and rights metadata; no public dataset DOI is asserted here.
 
-Both populations' repeated-CV matrices and both sets of 100 fixed random panels and saved random-control results are included. Those results remain inspectable; the validation random-control comparison is not yet fully rerunnable from this deposit.
+The original five-repeat blind-masking assessment, matching-QC records, genetic-group labels and quality-subset membership are retained as historical design evidence. They were not recomputed on the reconstructed matrices. Historical receipts are stored separately under `02_data/random_controls/validation/metadata/historical_input_records/`.
 
-Optional **regeneration** of validation random panels additionally uses the historical pre-imputation `observed_A1_151.npy`, seven frozen 128-position candidate banks and their template. These are separate from the 16 prediction inputs and are not included. Using the supplied fixed panels does not require regenerating the panels. See `GENERATION_REFERENCE.md` in the same documentation directory.
+## Optional panel generation
+
+Regenerating validation panels additionally requires historical observed genotypes, the original site metadata, candidate banks and their template. These are separate from the prediction inputs and remain outside the current package. See [GENERATION_REFERENCE.md](GENERATION_REFERENCE.md). Their old `PENDING_common_genotypes/observed_catalog/` paths are retained only by the optional historical generator/verifier code; the prediction runner reads `genotypes/`.
