@@ -31,7 +31,6 @@
     "01_code/ACEGP/src/statistical_reporting.py",
     "01_code/ACEGP/validation_release.py",
     "01_code/anther/map_gene_snps.py",
-    "01_code/anther/plot_review.R",
     "01_code/anther/prepare_workspace.py",
     "01_code/anther/review_anther.R",
     "01_code/environment/anther/R_packages.csv",
