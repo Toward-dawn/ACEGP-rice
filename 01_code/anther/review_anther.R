@@ -6,12 +6,12 @@ suppressWarnings(Sys.setlocale('LC_CTYPE','English_United States.utf8'))
 out <- args[1]
 options(stringsAsFactors=FALSE, warn=1)
 Sys.setenv(LANGUAGE="en")
-suppressPackageStartupMessages({library(DESeq2);library(jsonlite);library(ggplot2);library(fgsea);library(limma);library(edgeR);library(BiocParallel)})
+suppressPackageStartupMessages({library(DESeq2);library(jsonlite);library(fgsea);library(limma);library(edgeR);library(BiocParallel)})
 src <- fromJSON(file.path(out,"inputs/source_paths.json"))
 savecsv <- function(x,p) write.csv(x,file.path(out,p),row.names=FALSE,na="")
 savejson <- function(x,p) write_json(x,file.path(out,p),pretty=TRUE,auto_unbox=TRUE,na="null",digits=16)
 set.seed(20261018)
-packages <- c('DESeq2','edgeR','limma','fgsea','ggplot2','BiocParallel','jsonlite')
+packages <- c('DESeq2','edgeR','limma','fgsea','BiocParallel','jsonlite')
 savecsv(data.frame(package=packages,version=sapply(packages,function(x)as.character(packageVersion(x)))),"versions/R_packages.csv")
 writeLines(capture.output(sessionInfo()),file.path(out,"versions/sessionInfo.txt"))
 
@@ -80,21 +80,14 @@ master$R4628_small_change_R996_repressed<-abs(master$R4628_log2FoldChange)<0.5 &
 savecsv(master,'tables/51_genes_expression_recomputed.csv')
 savejson(list(state='RNA_STATISTICAL_RECOMPUTATION_COMPLETE',raw_genes=nrow(cts),tested_genes=nrow(dds),original_global_interaction_genes=length(legacyset),recomputed_interaction_genes=length(nowset),frozen_global_list_confirmed=setequal(legacyset,nowset),frozen_51_confirmed=sum(master$interaction_standard_DEG),gene_id_compatibility_all51=all(genes$gene_id%in%rownames(dds)),gene_filter='rowSums raw counts>=10',batch_note='no documented batch variable; no invented covariate or sample exclusion',coefficient_identity_max_error=max(abs(res$R996$log2FoldChange-res$R4628$log2FoldChange-res$interaction$log2FoldChange),na.rm=TRUE),counting_note='legacy unstranded gene-body featureCounts -t gene -s 0; no re-counting or exon-level claim',mislabels=list(legacy_baseMean='R996_baseMean and R4628_baseMean in old master both represented the all-sample mean, not cultivar-specific means',legacy_additive='additive_heat_effect_all_genes.csv duplicated reference-cultivar heat contrast, not a separately fitted additive model',legacy_filter_log='printed baseMean>=10 although executed row sum>=10',interaction_sign='more positive relative response; not automatically favorable or tolerance-enhancing')), 'validation/RNA_RECOMPUTATION_ACCEPTANCE.json')
 
-# QC plots; biological replicates shown individually. No sample exclusions.
+# QC statistics; no sample exclusions.
 vsd<-vst(dds,blind=TRUE)
 v<-assay(vsd);top<-head(order(apply(v,1,var),decreasing=TRUE),500)
 pc<-prcomp(t(v[top,,drop=FALSE]),center=TRUE,scale.=FALSE)
 pct<-pc$sdev^2/sum(pc$sdev^2)*100
 pdf<-cbind(meta,PC1=pc$x[,1],PC2=pc$x[,2])
 savecsv(pdf,'tables/PCA_coordinates.csv')
-theme_set(theme_bw(base_size=11)+theme(panel.grid.minor=element_blank()))
-p<-ggplot(pdf,aes(PC1,PC2,color=cultivar,shape=condition))+geom_point(size=3)+geom_text(aes(label=paste0(substr(cultivar,2,8),'_',substr(condition,1,1),replicate)),vjust=-0.9,size=2.8,show.legend=FALSE)+scale_color_manual(values=c(R4628='#4F86A6',R996='#BF6B98'))+labs(x=sprintf('PC1 (%.1f%%)',pct[1]),y=sprintf('PC2 (%.1f%%)',pct[2]),title='Anther RNA-seq: 12 biological samples')
-ggsave(file.path(out,'visualizations/anther_QC_PCA.png'),p,width=7,height=5,dpi=200)
-ggsave(file.path(out,'visualizations/anther_QC_PCA.pdf'),p,width=7,height=5)
 corv<-cor(v[top,,drop=FALSE]);savecsv(cbind(sample=rownames(corv),as.data.frame(corv)), 'tables/top500_sample_correlation.csv')
-pv<-data.frame(sample=rep(colnames(corv),each=ncol(corv)),other=rep(rownames(corv),ncol(corv)),r=as.vector(corv))
-p<-ggplot(pv,aes(sample,other,fill=r))+geom_tile()+scale_fill_gradient(low='#EAF0F3',high='#4F86A6')+coord_equal()+theme(axis.text.x=element_text(angle=65,hjust=1,size=8),axis.text.y=element_text(size=8))+labs(x=NULL,y=NULL,fill='Pearson r',title='VST expression correlation: 500 most variable genes')
-ggsave(file.path(out,'visualizations/anther_sample_correlation.png'),p,width=8,height=7,dpi=180)
 
 # Function sets are frozen before computing statistical scores.
 ann<-read.csv(file.path(out,'inputs/functional_term_membership.csv'),check.names=FALSE)
