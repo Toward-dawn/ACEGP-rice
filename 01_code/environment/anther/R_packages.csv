@@ -3,6 +3,5 @@
 "edgeR","4.8.2"
 "limma","3.66.0"
 "fgsea","1.36.2"
-"ggplot2","4.0.3"
 "BiocParallel","1.44.0"
 "jsonlite","2.0.0"
