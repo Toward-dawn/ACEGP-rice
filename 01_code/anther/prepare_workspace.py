@@ -11,7 +11,6 @@ WORKSPACE_DIRECTORIES = (
     "functional",
     "validation",
     "versions",
-    "visualizations",
     "sources",
 )
 COPIED_DIRECTORIES = ("inputs", "tables", "functional", "sources")
