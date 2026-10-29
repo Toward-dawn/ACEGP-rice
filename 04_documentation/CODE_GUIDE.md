@@ -69,7 +69,7 @@ python -B 01_code/anther/prepare_workspace.py --check
 python -B 01_code/anther/prepare_workspace.py --output /path/to/anther-work
 ```
 
-Workspace preparation copies existing inputs. `review_anther.R` performs expression and functional analyses, `map_gene_snps.py` maps genes to markers and `plot_review.R` plots saved results. These sources and data are unchanged by the validation update.
+Workspace preparation copies existing inputs. `review_anther.R` performs expression and functional analyses, `map_gene_snps.py` maps genes to markers. 
 
 ## Verification scope
 
