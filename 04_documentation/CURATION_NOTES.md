@@ -1,6 +1,6 @@
 # Release changes
 
-## 20261029_v3
+## v1.0.0
 
 - Register the reconstructed validation genotype version and its matching predictions. The derived background and QTL arrays match the accepted rerun's SHA256 values.
 - Verify new validation hashes explicitly, while preserving historical receipts as provenance.

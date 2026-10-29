@@ -2,7 +2,7 @@
 
 ## Input and output rules
 
-Use the companion data matching code version `20261029_v3`. Extract `02_data/` at the repository root. Internal `development` labels refer to the primary population. All outputs must be outside the repository. Prediction fitting requires Linux/POSIX, the pinned Python dependencies and sufficient memory and disk for the frozen cache settings.
+Use the companion data matching code version `v1.0.0`. Extract `02_data/` at the repository root. Internal `development` labels refer to the primary population. All outputs must be outside the repository. Prediction fitting requires Linux/POSIX, the pinned Python dependencies and sufficient memory and disk for the frozen cache settings.
 
 ```bash
 python -B 01_code/verify_release.py --code-only
@@ -41,7 +41,7 @@ python -B 01_code/ACEGP/run_analysis.py --analysis genetic-group --population va
 python -B 01_code/ACEGP/run_analysis.py --analysis genetic-group --population validation --summarize --output /path/to/validation-groups
 ```
 
-Repeat quality analysis with `--subset 142` and a different output directory. Both subsets retain their original independently selected members and restrict the original 151-accession folds to those members. Genetic-group CV uses the original five groups; it does not recluster the reconstructed genotypes.
+Repeat quality analysis with `--subset 142` and a different output directory. Both subsets retain their original independently selected members and restrict the original 151-accession folds to those members. Genetic-group CV uses the original five groups; it does not recluster the final imputed genotypes.
 
 Validation controls refit GBLUP and RKHS for both genome-only and genome-plus-QTL representations, together with ACEGP without block features. Primary controls retain the existing workflow and reuse their unchanged archived genome-only control predictions. The frozen fitting algorithms, grids and seeds are unchanged.
 
@@ -73,4 +73,4 @@ Workspace preparation copies existing inputs. `review_anther.R` performs express
 
 ## Verification scope
 
-The reconstructed-input analyses were completed and independently audited before this packaging update. Packaging checks cover source identity, registered input hashes, saved prediction consistency, execution routing, syntax and synthetic worker tests. No training or new scientific analysis was run during packaging. A complete rerun of this packaged interface remains a separate execution; the checks above must not be described as a new training reproduction.
+The validation-input analyses were completed and independently audited before this packaging update. Packaging checks cover source identity, registered input hashes, saved prediction consistency, execution routing, syntax and synthetic worker tests. No training or new scientific analysis was run during packaging. A complete rerun of this packaged interface remains a separate execution; the checks above must not be described as a new training reproduction.

@@ -1035,5 +1035,6 @@
     "qtl": "768513d709bff6ab35d42501a7940cf35709c7582bac48771ff522d263828892"
   },
   "historical_quality_assessment_retained": true,
-  "genetic_groups_and_subset_membership_unchanged": true
+  "genetic_groups_and_subset_membership_unchanged": true,
+  "public_data_label": "validation-imputed-v1"
 }

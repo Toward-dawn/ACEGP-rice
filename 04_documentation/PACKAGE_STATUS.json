@@ -1,5 +1,5 @@
 {
-  "version": "20261029_v3",
+  "version": "v1.0.0",
   "repository_url": "https://github.com/Toward-dawn/ACEGP-rice",
   "validation_data_version": "validation_reconstructed_20261029",
   "code_licence": "MIT",
@@ -19,5 +19,6 @@
   "validation_main_random_inputs_missing": 0,
   "optional_generation_inputs_included": false,
   "archived_prediction_tolerance_pp": 1e-08,
-  "full_training_rerun_of_packaged_interface": false
+  "full_training_rerun_of_packaged_interface": false,
+  "validation_data_label": "validation-imputed-v1"
 }

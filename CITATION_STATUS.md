@@ -4,7 +4,7 @@ Software: **ACEGP: QTL-informed genomic prediction in rice**.
 
 Repository: https://github.com/Toward-dawn/ACEGP-rice
 
-Code version: `20261029_v3`. Companion validation input version: `validation_reconstructed_20261029`.
+Code version: `v1.0.0`. Companion validation input version: `validation-imputed-v1`.
 
 Associated manuscript: *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*.
 
