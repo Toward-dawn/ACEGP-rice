@@ -18,7 +18,7 @@ def main():
     PACKAGE = next(
         p
         for p in Path(__file__).resolve().parents
-        if (p / "04_documentation/PACKAGE_STATUS.json").is_file()
+        if (p / "documentation/PACKAGE_STATUS.json").is_file()
     )
     if OUT == PACKAGE or OUT.is_relative_to(PACKAGE):
         raise RuntimeError("Output must be outside the archive.")

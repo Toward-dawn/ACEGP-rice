@@ -24,7 +24,7 @@ def build_parser():
 
 
 def resolve_sources(package):
-    source_file = package / "04_documentation/anther_source_paths.package_relative.json"
+    source_file = package / "documentation/anther_source_paths.package_relative.json"
     sources = json.loads(source_file.read_text(encoding="utf-8"))
     return {name: str(package / relative) for name, relative in sources.items()}
 

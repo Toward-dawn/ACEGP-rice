@@ -18,7 +18,7 @@ def sha256(path):
 def verify_validation_release(package, include_raw=False):
     """Check versioned files; historical hashes remain provenance only."""
     package = Path(package).resolve()
-    registration_path = package / "04_documentation/VALIDATION_DATA_VERSION.json"
+    registration_path = package / "documentation/VALIDATION_DATA_VERSION.json"
     registration = json.loads(registration_path.read_text(encoding="utf-8"))
     if registration["data_version"] != DATA_VERSION:
         raise ValueError("The companion data version does not match this code release.")

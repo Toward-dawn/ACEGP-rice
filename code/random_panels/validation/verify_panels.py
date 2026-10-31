@@ -16,9 +16,9 @@ import numpy as np
 PACKAGE = next(
     p
     for p in Path(__file__).resolve().parents
-    if (p / "04_documentation/PACKAGE_STATUS.json").is_file()
+    if (p / "documentation/PACKAGE_STATUS.json").is_file()
 )
-CODE = PACKAGE / "01_code/ACEGP"
+CODE = PACKAGE / "code/ACEGP"
 sys.path[:0] = [str(CODE), str(CODE / "src")]
 from public_paths import RANDOM_ROOT, DATA_ROOT, output_root
 

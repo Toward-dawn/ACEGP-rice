@@ -7,47 +7,47 @@ The primary population (241 accessions; eight regions) and validation population
 ## Contents
 
 ```text
-01_code/ACEGP/           Prediction models and analysis runner
-01_code/random_panels/   Fixed random-panel workflows
-01_code/anther/          Anther expression and gene–SNP analyses
-01_code/statistics/       Statistical analysis
-01_code/environment/     Python and R dependency records
-04_documentation/        Detailed guides, data definitions and provenance
-FILE_MANIFEST.csv        Code and companion-data file checksums
-CODE_FILE_MANIFEST.csv   Code-package file checksums
+code/ACEGP/           Prediction models and analysis runner
+code/random_panels/   Fixed random-panel workflows
+code/anther/          Anther expression and gene–SNP analyses
+code/statistics/       Statistical analysis
+code/environment/     Python and R dependency records
+documentation/        Detailed guides, data definitions and provenance
+documentation/FILE_MANIFEST.csv        Code and companion-data file checksums
+documentation/CODE_FILE_MANIFEST.csv   Code-package file checksums
 LICENSE                  Software licence
 ```
 
-This repository provides the workflows and fixed inputs needed to reproduce the study; it is not a general-purpose interface for arbitrary datasets. See [Execution guide](04_documentation/CODE_GUIDE.md) for all analysis commands and [Data definitions](04_documentation/DATA_DICTIONARY.md) for file formats, units and identifiers.
+This repository provides the workflows and fixed inputs needed to reproduce the study; it is not a general-purpose interface for arbitrary datasets. See [Execution guide](documentation/CODE_GUIDE.md) for all analysis commands and [Data definitions](documentation/DATA_DICTIONARY.md) for file formats, units and identifiers.
 
 ## Step 1: Set up the environment
 
 The prediction runner requires Linux/POSIX, such as Ubuntu or Windows Subsystem for Linux (WSL), and the specified Python dependencies. GPU hardware is not required. Use a dedicated Python environment:
 
 ```bash
-python -m pip install -r 01_code/environment/prediction_requirements.txt
+python -m pip install -r code/environment/prediction_requirements.txt
 ```
 
-The validation runs used Python 3.12.3. Anther R package versions are recorded in `01_code/environment/anther/`. Optional panel-generation inputs are described in [Input versions](04_documentation/PENDING_INPUTS.md).
+The validation runs used Python 3.12.3. Anther R package versions are recorded in `code/environment/anther/`. Optional panel-generation inputs are described in [Input versions](documentation/PENDING_INPUTS.md).
 
 ## Step 2: Prepare and check the companion data
 
-The matching companion dataset has not yet been deposited. Place its `02_data/` directory beside `01_code/` in the repository root once it is available. The validation input version is `validation-imputed-v1`. Do not combine this code with the old `20261028_v2_split2` data archive.
+The matching companion dataset has not yet been deposited. Place its `02_data/` directory beside `code/` in the repository root once it is available. The validation input version is `validation-imputed-v1`. Do not combine this code with the old `20261028_v2_split2` data archive.
 
 ```text
 ACEGP-rice/
-  01_code/
+  code/
   02_data/          # matching companion data
-  04_documentation/
-  FILE_MANIFEST.csv
+  documentation/
+  documentation/FILE_MANIFEST.csv
 ```
 
 Check the code package, then the combined files and runtime requirements:
 
 ```bash
-python -B 01_code/verify_release.py --code-only
-python -B 01_code/verify_release.py
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --check
+python -B code/verify_release.py --code-only
+python -B code/verify_release.py
+python -B code/ACEGP/run_analysis.py --analysis prediction --population validation --check
 ```
 
 These checks do not train models. The hash verifier also runs on Windows; model execution requires Linux/POSIX. The data source and access details will be added when the dataset is deposited.
@@ -57,17 +57,17 @@ These checks do not train models. The hash verifier also runs on Windows; model 
 Choose a new output directory outside the repository. The following command fits one registered validation fold:
 
 ```bash
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --repeat 1 --fold 1 --output /path/to/validation-fold
+python -B code/ACEGP/run_analysis.py --analysis prediction --population validation --repeat 1 --fold 1 --output /path/to/validation-fold
 ```
 
 To run and summarize all 20 repeats of fivefold cross-validation:
 
 ```bash
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --all-folds --output /path/to/validation-cv
-python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --summarize --output /path/to/validation-cv
+python -B code/ACEGP/run_analysis.py --analysis prediction --population validation --all-folds --output /path/to/validation-cv
+python -B code/ACEGP/run_analysis.py --analysis prediction --population validation --summarize --output /path/to/validation-cv
 ```
 
-Use `--population primary` for the primary population. Each population is evaluated within itself. The runner uses the registered partitions, region IDs and seeds, and compares new predictions with the matching archived results. A matching interrupted run can use `--resume`; see the [Execution guide](04_documentation/CODE_GUIDE.md) for incomplete-fold handling and commands for the other analyses.
+Use `--population primary` for the primary population. Each population is evaluated within itself. The runner uses the registered partitions, region IDs and seeds, and compares new predictions with the matching archived results. A matching interrupted run can use `--resume`; see the [Execution guide](documentation/CODE_GUIDE.md) for incomplete-fold handling and commands for the other analyses.
 
 ## Output files
 
@@ -89,4 +89,8 @@ For reference, the other prediction and statistics workflows were verified on Ub
 
 ## Data and citation
 
-The companion dataset is being prepared for deposit; a data DOI is not yet available. Please cite the accompanying paper and dataset when their final citations are available. Original software uses the MIT terms in [LICENSE](LICENSE); the copyright-holder name remains to be confirmed. Original data and results use CC BY 4.0, while third-party materials retain their source terms. See [third-party notices](THIRD_PARTY_NOTICES.md).
+The companion dataset is being prepared for deposit; a data DOI is not yet available. Please cite the accompanying paper and dataset when their final citations are available. Original software uses the MIT terms in [LICENSE](LICENSE); the copyright-holder name remains to be confirmed. Original data and results use CC BY 4.0, while third-party materials retain their source terms. See [third-party notices](documentation/THIRD_PARTY_NOTICES.md).
+
+Software version: `v1.0.0`. The software creator list and order are not yet confirmed; citation metadata will be added once confirmed.
+
+Software version: `v1.0.0`. The software creator list and order are not yet confirmed; citation metadata will be added once confirmed.

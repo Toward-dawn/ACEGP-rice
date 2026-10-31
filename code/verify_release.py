@@ -17,7 +17,7 @@ def digest(path):
 
 def verify(package, code_only=False):
     name = "CODE_FILE_MANIFEST.csv" if code_only else "FILE_MANIFEST.csv"
-    with (package / name).open(encoding="utf-8-sig", newline="") as stream:
+    with (package / "documentation" / name).open(encoding="utf-8-sig", newline="") as stream:
         rows = list(csv.DictReader(stream))
     missing, changed = [], []
     for row in rows:

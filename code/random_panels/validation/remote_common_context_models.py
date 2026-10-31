@@ -21,9 +21,9 @@ import pandas as pd
 PACKAGE = next(
     p
     for p in Path(__file__).resolve().parents
-    if (p / "04_documentation/PACKAGE_STATUS.json").is_file()
+    if (p / "documentation/PACKAGE_STATUS.json").is_file()
 )
-CODE = PACKAGE / "01_code/ACEGP"
+CODE = PACKAGE / "code/ACEGP"
 sys.path[:0] = [str(CODE), str(CODE / "src")]
 from public_paths import (
     DATA_ROOT,
@@ -80,7 +80,7 @@ def verified_sources():
     assert panel_record["panels"] == 100 and panel_record["regions_per_panel"] == 7
     return {
         "data_version": registration["data_version"],
-        "registration_sha256": sha(PACKAGE / "04_documentation/VALIDATION_DATA_VERSION.json"),
+        "registration_sha256": sha(PACKAGE / "documentation/VALIDATION_DATA_VERSION.json"),
         "fitter_CODE_HASH": CODE_HASH,
         "historical_quality_assessment_retained": True,
     }

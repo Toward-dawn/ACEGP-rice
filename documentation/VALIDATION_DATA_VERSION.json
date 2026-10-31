@@ -6,67 +6,67 @@
   "samples": 151,
   "registered_files": [
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/eight_plus_takai.py",
+      "path": "code/ACEGP/legacy_model_snapshot/eight_plus_takai.py",
       "sha256": "b5c3ed688f771f479d670d418de3d7feed37175f79138b6303835065c6140252"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/incremental_support.py",
+      "path": "code/ACEGP/legacy_model_snapshot/incremental_support.py",
       "sha256": "69c245cf85b9b21f68197062428368421685e6a9a9d6e905ce47d4ca4fbd1b86"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_ace_gp.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_ace_gp.py",
       "sha256": "f82002515831703aa1319c074920bc2afe2a2d796b16ad0cc17dc957215002d9"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_amse10_repeated_blend.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_amse10_repeated_blend.py",
       "sha256": "949eabbfc2b42f82e638a6d586dbf63b201d0c42ac6fba591b32c2e1efd62e09"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_amse11_full_pool_blend.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_amse11_full_pool_blend.py",
       "sha256": "bdbeeae1134e3103ededb6887a531a56af9475a3ab720a195c4daa5440c3d594"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_amse18_conservative_anchor_blend.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_amse18_conservative_anchor_blend.py",
       "sha256": "1369835f2a4d521922dda7336897ec9bd21694e204a6147bf3be9341a21b254a"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_amse8_qtl_expert.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_amse8_qtl_expert.py",
       "sha256": "fb8e33a68de539d24a30026957241c5bbb7013d47b68f7f90df6274386615581"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_qtl_block_ard.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_qtl_block_ard.py",
       "sha256": "9901a83a9644bb28d5c9524745c827e49ee538c36447581928a8fba16ecd4f36"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/run_scheme2_tuned.py",
+      "path": "code/ACEGP/legacy_model_snapshot/run_scheme2_tuned.py",
       "sha256": "58405460b98abdc6f5d7a241e2717a35cfc416a327fc336505286f31a4fb82a8"
     },
     {
-      "path": "01_code/ACEGP/legacy_model_snapshot/runtime_support.py",
+      "path": "code/ACEGP/legacy_model_snapshot/runtime_support.py",
       "sha256": "9c04a1a913171d70bb8843ee26ce51c02e9cb684e1cfee10b33c0d0642e1e450"
     },
     {
-      "path": "01_code/ACEGP/src/acegp_uniform.py",
+      "path": "code/ACEGP/src/acegp_uniform.py",
       "sha256": "eca8505715c96a3d1ca9e05ba9eb0b253a15847fe17fe4db2c0936e55f30e4c8"
     },
     {
-      "path": "01_code/ACEGP/src/acegp_without_block.py",
+      "path": "code/ACEGP/src/acegp_without_block.py",
       "sha256": "cbcebdfe3aed65fa89ae3231d1ef589b5f483cad0ec1a72c24121e005c9092dc"
     },
     {
-      "path": "01_code/ACEGP/src/fixed9_ld_tools.py",
+      "path": "code/ACEGP/src/fixed9_ld_tools.py",
       "sha256": "774265adcdff8217da75d619b6d6f3c97167f4dd3e28363b5bce154b4793eb92"
     },
     {
-      "path": "01_code/ACEGP/src/legacy_tiered_adapter.py",
+      "path": "code/ACEGP/src/legacy_tiered_adapter.py",
       "sha256": "7c00af57290e004b0f90296467e015664d78087013230e9840e3baf546fd1dea"
     },
     {
-      "path": "01_code/ACEGP/src/reporting_wrappers.py",
+      "path": "code/ACEGP/src/reporting_wrappers.py",
       "sha256": "389c053c174febaae97cfb29e447fbe9219fe45e77614b51d130311c4bded692"
     },
     {
-      "path": "01_code/ACEGP/src/statistical_reporting.py",
+      "path": "code/ACEGP/src/statistical_reporting.py",
       "sha256": "cc516d1e33ee798097e61b3105f30bfe4c9ce21a17d015c8d6a0f105280a2752"
     },
     {

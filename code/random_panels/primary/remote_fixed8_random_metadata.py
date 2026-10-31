@@ -1,4 +1,4 @@
-"""Validation seven-region metadata matching; genotype-only, no model imports."""
+"""Generate matched eight-region panels from genotype metadata."""
 
 from pathlib import Path
 import os
@@ -20,52 +20,20 @@ import numpy as np
 PACKAGE = next(
     p
     for p in Path(__file__).resolve().parents
-    if (p / "04_documentation/PACKAGE_STATUS.json").is_file()
+    if (p / "documentation/PACKAGE_STATUS.json").is_file()
 )
-CODE = PACKAGE / "01_code/ACEGP"
+CODE = PACKAGE / "code/ACEGP"
 sys.path[:0] = [str(CODE), str(CODE / "src")]
 from public_paths import RANDOM_ROOT, DATA_ROOT, output_root
 
-ROOT = Path(__file__).resolve().parent
-VMETA = RANDOM_ROOT / "validation/metadata"
-SOURCE = RANDOM_ROOT / "validation/PENDING_common_genotypes/observed_catalog"
-import validation_ld_tools as ld
+ROOT = None
+import fixed9_ld_tools as ld
 
 OUT = None
-REG = json.loads((VMETA / "original_matching_registration.json").read_text())
+REG = json.loads(
+    (RANDOM_ROOT / "primary/metadata/fixed8_random_metadata_registration.json").read_text()
+)
 EDGE = np.array([np.inf if x == "infinity" else x for x in REG["spacing_edges_bp"]], float)
-
-
-class MatrixReader:
-    def __init__(self, path, n, m):
-        self.n, self.m = n, m
-        self.raw = np.load(path, mmap_mode="r", allow_pickle=False)
-        assert self.raw.shape == (m, n) and self.raw.dtype == np.int8
-
-    def __call__(self, rows):
-        rows = np.asarray(rows, dtype=np.int64)
-        assert rows.ndim == 1 and (not len(rows) or (rows.min() >= 0 and rows.max() < self.m))
-        return np.asarray(self.raw[rows, :].T, dtype=np.int8)
-
-
-def stop_requested():
-    p = ROOT.parent / "STOP_REQUESTED"
-    return p.exists() and p.read_text() != "SCHEDULER_HANDOFF_AFTER_ACCEPTED_MASKED_CHR1_V1\n"
-
-
-def resources_ok():
-    try:
-        lines = Path("/sys/fs/cgroup/memory.stat").read_text().splitlines()
-        anon = int(dict(line.split() for line in lines)["anon"]) / (1024**3)
-    except Exception:
-        anon = float("inf")
-    import shutil
-
-    free = shutil.disk_usage(ROOT).free / (1024**3)
-    return (
-        anon < REG["resource_gate"]["anonymous_memory_start_below_GiB"]
-        and free > REG["resource_gate"]["free_disk_above_GiB"]
-    )
 
 
 def sha(p):
@@ -84,7 +52,7 @@ def atomic(p, d):
 
 
 def regions():
-    with (DATA_ROOT / "inputs/validation_regions.csv").open() as f:
+    with (DATA_ROOT / "inputs/development_regions.csv").open() as f:
         return [
             {**r, **{k: int(r[k]) for k in ["chr", "start_bp", "end_bp"]}}
             for r in csv.DictReader(f)
@@ -103,14 +71,18 @@ def rng(label):
 
 
 def data():
-    source = SOURCE / "raw_metadata_validation151.npz"
+    source = RANDOM_ROOT / "primary/genotype_source/raw_metadata_compressed.npz"
+    assert sha(source) == REG["raw_metadata_sha256"]
     with np.load(source, allow_pickle=False) as f:
         raw = {k: f[k] for k in ["chromosome", "position_bp", "raw_MAF", "raw_missing_rate"]}
-    assert len(raw["position_bp"]) == REG["source_sites"]
     return (
         raw,
         ld.PositionIndex(raw["chromosome"], raw["position_bp"]),
-        MatrixReader(SOURCE / "observed_A1_151.npy", 151, len(raw["position_bp"])),
+        ld.BedReader(
+            RANDOM_ROOT / "primary/genotype_source/PMB2026_full_241.bed",
+            241,
+            len(raw["position_bp"]),
+        ),
     )
 
 
@@ -139,9 +111,6 @@ def record(index, reader, raw, r, start):
     if len(rows) < 2:
         return None
     p = profile(index, reader, r, start)
-    maf = raw["raw_MAF"][rows]
-    maf_hist = np.r_[np.histogram(maf[np.isfinite(maf)], REG["MAF_bins"])[0], np.isnan(maf).sum()]
-    assert int(maf_hist.sum()) == len(rows), "Undefined MAF must be an explicit category"
     return {
         "qid": r["qid"],
         "chr": r["chr"],
@@ -150,7 +119,7 @@ def record(index, reader, raw, r, start):
         **p,
         "first": int(pos[0]),
         "last": int(pos[-1]),
-        "MAF_hist": maf_hist.tolist(),
+        "MAF_hist": np.histogram(raw["raw_MAF"][rows], REG["MAF_bins"])[0].tolist(),
         "missing_hist": np.histogram(raw["raw_missing_rate"][rows], REG["missing_bins"])[
             0
         ].tolist(),
@@ -254,6 +223,23 @@ def domains(r, allregions):
     )
 
 
+def priority_active():
+    p = ROOT / "validation/status.json"
+    if (
+        p.exists()
+        and not (ROOT / "validation/summary.json").exists()
+        and json.loads(p.read_text()).get("active")
+    ):
+        return True
+    p = ROOT / "controls/status.json"
+    return (
+        p.exists()
+        and not (ROOT / "controls/validation/COMPLETE.json").exists()
+        and json.loads(p.read_text()).get("cohort") == "validation"
+        and json.loads(p.read_text()).get("state") == "RUNNING"
+    )
+
+
 def bank(k):
     r = regions()[k]
     folder = OUT / "banks" / r["qid"]
@@ -273,10 +259,8 @@ def bank(k):
     fail = collections.Counter(old.get("rejections", {}))
     start = int(old["next_position"])
     for i in range(start, len(starts)):
-        if stop_requested():
-            return
-        while not resources_ok():
-            if stop_requested():
+        while priority_active():
+            if (ROOT / "STOP_REQUESTED").exists():
                 return
             time.sleep(20)
         a = record(index, reader, raw, r, int(starts[i]))
@@ -325,7 +309,7 @@ def joint(index, raw):
     seen_s = {x["SNP_rows_sha256"] for x in accepted}
     start = int(old.get("proposals", 0))
     for i in range(start, REG["maximum_whole_panel_proposals"]):
-        if stop_requested():
+        if (ROOT / "STOP_REQUESTED").exists():
             return
         select = [int(generator.integers(len(b))) for b in banks]
         a = [b[j] for b, j in zip(banks, select)]
@@ -425,6 +409,9 @@ def joint(index, raw):
 
 
 def configure_output(path=None):
-    global OUT
-    OUT = output_root(path) / "validation_matching_v1"
+    """Set output paths for an explicit execution request."""
+    global ROOT, OUT
+    ROOT = output_root(path)
+    ROOT.mkdir(parents=True, exist_ok=True)
+    OUT = ROOT / "random_fixed8_metadata"
     OUT.mkdir(parents=True, exist_ok=True)

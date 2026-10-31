@@ -113,7 +113,7 @@ def load_worker(analysis, package, output):
     if analysis in FOLD_WORKERS:
         worker = importlib.import_module(FOLD_WORKERS[analysis])
     elif analysis in RANDOM_WORKERS:
-        path = package / "01_code/random_panels" / RANDOM_WORKERS[analysis]
+        path = package / "code/random_panels" / RANDOM_WORKERS[analysis]
         spec = importlib.util.spec_from_file_location("public_random_worker", path)
         worker = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(worker)
@@ -130,7 +130,7 @@ def dispatch_task(args, population, package, output, worker, task, folder):
             [
                 sys.executable,
                 "-B",
-                str(package / "01_code/ACEGP/run_cv_fold.py"),
+                str(package / "code/ACEGP/run_cv_fold.py"),
                 "--population",
                 population,
                 "--repeat",
@@ -220,7 +220,7 @@ def run_statistical_comparisons(package, output):
         primary_statistics.OUT / "secondary_models_family.json", secondary_family
     )
     subprocess.run(
-        [sys.executable, "-B", str(package / "01_code/statistics/exact_sign_tests.py"),
+        [sys.executable, "-B", str(package / "code/statistics/exact_sign_tests.py"),
          "--output", str(primary_statistics.OUT / "sign_tests.json")],
         check=True,
     )

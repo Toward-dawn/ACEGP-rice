@@ -32,9 +32,9 @@ def write_json(path, value):
 
 def check_inputs(package, analysis):
     """Check every packaged runtime file against the release manifest."""
-    dependencies = read_json(package / "04_documentation/DEPENDENCIES.json")
+    dependencies = read_json(package / "documentation/DEPENDENCIES.json")
     required = dependencies["required_existing_files"]
-    with (package / "FILE_MANIFEST.csv").open(encoding="utf-8-sig", newline="") as stream:
+    with (package / "documentation/FILE_MANIFEST.csv").open(encoding="utf-8-sig", newline="") as stream:
         manifest = {row["Path"]: row for row in csv.DictReader(stream)}
     missing, changed = [], []
     for relative in required:
@@ -52,7 +52,7 @@ def check_inputs(package, analysis):
             changed.append(str(error))
     versions = {}
     errors = []
-    requirements = package / "01_code/environment/prediction_requirements.txt"
+    requirements = package / "code/environment/prediction_requirements.txt"
     for line in requirements.read_text(encoding="utf-8").splitlines():
         if not line.strip() or line.startswith("#"):
             continue
@@ -84,7 +84,7 @@ def run_identity(package, args, population):
         "analysis": args.analysis,
         "population": population,
         "quality_subset": args.subset if args.analysis == "quality" else None,
-        "release_manifest_sha256": sha256(package / "FILE_MANIFEST.csv"),
+        "release_manifest_sha256": sha256(package / "documentation/FILE_MANIFEST.csv"),
     }
 
 
