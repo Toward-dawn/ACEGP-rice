@@ -89,7 +89,7 @@ For reference, the other prediction and statistics workflows were verified on Ub
 
 ## Data and citation
 
-The companion dataset is being prepared for deposit; a data DOI is not yet available. Please cite the accompanying paper and dataset when their final citations are available. Original software uses the MIT terms in [LICENSE](LICENSE); the copyright-holder name remains to be confirmed. Original data and results use CC BY 4.0, while third-party materials retain their source terms. See [third-party notices](documentation/THIRD_PARTY_NOTICES.md).
+The companion dataset is being prepared for deposit; a data DOI is not yet available. Please cite the accompanying paper and dataset when their final citations are available. Original software uses the MIT terms in [LICENSE](LICENSE). Original data and results use CC BY 4.0, while third-party materials retain their source terms. See [third-party notices](documentation/THIRD_PARTY_NOTICES.md).
 
 Software version: `v1.0.0`. The software creator list and order are not yet confirmed; citation metadata will be added once confirmed.
 
