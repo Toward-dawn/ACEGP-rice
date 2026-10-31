@@ -73,4 +73,4 @@ Workspace preparation copies existing inputs. `review_anther.R` performs express
 
 ## Verification scope
 
-The validation-input analyses were completed and independently audited before this packaging update. Packaging checks cover source identity, registered input hashes, saved prediction consistency, execution routing, syntax and synthetic worker tests. No training or new scientific analysis was run during packaging. A complete rerun of this packaged interface remains a separate execution; the checks above must not be described as a new training reproduction.
+The study workflows were rerun against their registered inputs and compared with archived outputs. Two-population repeated CV, fixed random panels, model comparisons, regional ablation, quality subsets, genetic-group CV and statistics were checked. The anther R workflow was also rerun; CAMERA correlation and P values showed cross-platform numerical sensitivity, while the reported FDR significance classification remained unchanged. These results do not guarantee bitwise identity across environments. The preflight checks above do not fit models.

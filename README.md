@@ -1,55 +1,92 @@
 # ACEGP: QTL-informed genomic prediction in rice
 
-Code accompanying *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*.
+ACEGP combines 16 learners to compare genome-wide and QTL-informed genomic prediction of heat-induced spikelet fertility loss in rice. This repository accompanies *Curated heat-tolerance QTL priors improve genomic prediction of heat-induced spikelet fertility loss in rice*.
 
-ACEGP combines 16 learners to compare genome-wide and QTL-informed marker representations. Models are fitted and cross-validated separately in the primary population (241 accessions, eight fixed regions) and validation population (151 accessions, seven regions). Anther expression analyses provide biological context for the QTL regions.
+The primary population (241 accessions; eight regions) and validation population (151 accessions; seven regions) are trained and evaluated separately. Anther expression analyses provide biological context for the QTL regions.
 
-Repository: https://github.com/Toward-dawn/ACEGP-rice
+## Contents
 
-## Code and companion data
+```text
+01_code/ACEGP/           Prediction models and analysis runner
+01_code/random_panels/   Fixed random-panel workflows
+01_code/anther/          Anther expression and gene–SNP analyses
+01_code/statistics/       Statistical analysis
+01_code/environment/     Python and R dependency records
+04_documentation/        Detailed guides, data definitions and provenance
+FILE_MANIFEST.csv        Code and companion-data file checksums
+CODE_FILE_MANIFEST.csv   Code-package file checksums
+LICENSE                  Software licence
+```
 
-This code version is `v1.0.0`. It uses the registered validation input version `validation-imputed-v1` for repeated CV, fixed random panels, model comparisons and sensitivity analyses. Primary inputs and results are unchanged. The validation inputs contain imputed genotype calls in the registered sample and marker order.
+This repository provides the workflows and fixed inputs needed to reproduce the study; it is not a general-purpose interface for arbitrary datasets. See [Execution guide](04_documentation/CODE_GUIDE.md) for all analysis commands and [Data definitions](04_documentation/DATA_DICTIONARY.md) for file formats, units and identifiers.
 
-The companion data must be placed at `02_data/` beside `01_code/`. Data files are excluded from Git tracking. Do not combine this code with the old `20261028_v2_split2` data archive. The required files and hashes are recorded in `FILE_MANIFEST.csv` and `04_documentation/VALIDATION_DATA_VERSION.json`. See [input versions](04_documentation/PENDING_INPUTS.md) for the dataset layout and optional panel-generation inputs, and [data definitions](04_documentation/DATA_DICTIONARY.md) for units and identifiers.
+## Step 1: Set up the environment
+
+The prediction runner requires Linux/POSIX, such as Ubuntu or Windows Subsystem for Linux (WSL), and the specified Python dependencies. GPU hardware is not required. Use a dedicated Python environment:
+
+```bash
+python -m pip install -r 01_code/environment/prediction_requirements.txt
+```
+
+The validation runs used Python 3.12.3. Anther R package versions are recorded in `01_code/environment/anther/`. Optional panel-generation inputs are described in [Input versions](04_documentation/PENDING_INPUTS.md).
+
+## Step 2: Prepare and check the companion data
+
+The matching companion dataset has not yet been deposited. Place its `02_data/` directory beside `01_code/` in the repository root once it is available. The validation input version is `validation-imputed-v1`. Do not combine this code with the old `20261028_v2_split2` data archive.
 
 ```text
 ACEGP-rice/
   01_code/
-  02_data/                 # companion data
+  02_data/          # matching companion data
   04_documentation/
   FILE_MANIFEST.csv
-  CODE_FILE_MANIFEST.csv
-  SHA256SUMS_CODE.txt
 ```
 
-## Installation and checks
-
-The prediction runner requires Linux/POSIX and the package versions in `01_code/environment/prediction_requirements.txt`. Install them in a dedicated Python environment. Anther R dependencies are recorded separately in `01_code/environment/anther/`.
+Check the code package, then the combined files and runtime requirements:
 
 ```bash
-python -m pip install -r 01_code/environment/prediction_requirements.txt
 python -B 01_code/verify_release.py --code-only
-# After adding the matching companion data:
 python -B 01_code/verify_release.py
 python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --check
-python -B 01_code/ACEGP/run_analysis.py --analysis validation-random --check
 ```
 
-These checks do not train models. The hash-only verifier also works on Windows; execution requires Linux/POSIX. `--check` reports dependency or platform differences separately from file-integrity failures.
+These checks do not train models. The hash verifier also runs on Windows; model execution requires Linux/POSIX. The data source and access details will be added when the dataset is deposited.
 
-## Run an analysis
+## Step 3: Run prediction
 
-The following commands train models. Use a new output directory outside the repository.
+Choose a new output directory outside the repository. The following command fits one registered validation fold:
+
+```bash
+python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --repeat 1 --fold 1 --output /path/to/validation-fold
+```
+
+To run and summarize all 20 repeats of fivefold cross-validation:
 
 ```bash
 python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --all-folds --output /path/to/validation-cv
 python -B 01_code/ACEGP/run_analysis.py --analysis prediction --population validation --summarize --output /path/to/validation-cv
 ```
 
-The runner uses the fixed partitions, region IDs and seeds. It checks newly computed predictions against the matching archived outputs. Complete commands for model comparisons, region ablation, genetic-group CV, quality subsets, random panels, statistics and anther analyses are in [CODE_GUIDE.md](04_documentation/CODE_GUIDE.md).
+Use `--population primary` for the primary population. Each population is evaluated within itself. The runner uses the registered partitions, region IDs and seeds, and compares new predictions with the matching archived results. A matching interrupted run can use `--resume`; see the [Execution guide](04_documentation/CODE_GUIDE.md) for incomplete-fold handling and commands for the other analyses.
 
-## Version and attribution
+## Output files
 
-The frozen model libraries and configuration are unchanged. This update connects the public entry points to the registered inputs and matching results; it does not reselect regions or tune model parameters. The local integration checks are described in [CURATION_NOTES.md](04_documentation/CURATION_NOTES.md). A complete training rerun of this packaged interface has not been performed during packaging.
+For a prediction run, results are written beneath the selected output directory:
 
-Original software uses the MIT terms in [LICENSE](LICENSE). The copyright-holder field still requires confirmation; see [LICENSE_STATUS.md](LICENSE_STATUS.md). Original data and results use CC BY 4.0; third-party materials retain their source terms. Citation fields and release identifiers are tracked in [CITATION_STATUS.md](CITATION_STATUS.md). Journal tables and Supplementary Data S1 are separate submission files.
+```text
+repeated_cv/<population>/r01_f1/predictions.csv   Held-out predictions for one fold
+repeated_cv/<population>/r01_f1/training_choices.json   Model selection record
+repeated_cv/<population>/all_oof_predictions.csv  Combined out-of-fold predictions
+repeated_cv/<population>/paired_repeat_results.csv Metrics for each repeat
+repeated_cv/<population>/SUMMARY.json             Summary across repeats
+```
+
+`<population>` is `development` for the primary population or `validation` for the validation population. The combined files are generated by `--summarize` after all registered folds finish. CV repeats are data partitions, not independent biological replicates. The 100 random panels are each evaluated on the prespecified first fivefold split, not on 20 repeated splits.
+
+## Computing resources
+
+For reference, the other prediction and statistics workflows were verified on Ubuntu 22.04.1 with 32 logical CPU cores and a 64 GiB container memory limit. Ten analysis processes ran concurrently; the reported combined peak memory was approximately 14 GB. Runtime depends on the analysis and hardware. Validation random-panel runs require at least 25 GiB of free space under the configured cache policy. These figures describe that validation run and are not minimum requirements or a guarantee of runtime.
+
+## Data and citation
+
+The companion dataset is being prepared for deposit; a data DOI is not yet available. Please cite the accompanying paper and dataset when their final citations are available. Original software uses the MIT terms in [LICENSE](LICENSE); the copyright-holder name remains to be confirmed. Original data and results use CC BY 4.0, while third-party materials retain their source terms. See [third-party notices](THIRD_PARTY_NOTICES.md).
