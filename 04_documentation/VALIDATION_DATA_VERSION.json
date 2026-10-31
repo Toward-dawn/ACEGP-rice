@@ -71,7 +71,7 @@
     },
     {
       "path": "02_data/prediction_inputs/inputs/model_config.json",
-      "sha256": "0f80fdb411af35e43214a9b70ba52d1379d3f10423751930cb023f600b3cdfc4"
+      "sha256": "2429f50c1c39b85ddaf44a742f27eac39b78bce094f7294a2ff33e6f779fb356"
     },
     {
       "path": "02_data/prediction_inputs/inputs/validation_20x5.json",
@@ -199,7 +199,7 @@
     },
     {
       "path": "02_data/random_controls/validation/genotypes/SERVER_SHA256.json",
-      "sha256": "8415afdb2e69eb6cd574d516b11a40ff97762bd9f6d5d72a5bf0d744ed59cc42"
+      "sha256": "2a0dd5c1c131bd7f77dbeb7b9234fefb6b409f6f618636808a9f86f146ab0367"
     },
     {
       "path": "02_data/random_controls/validation/genotypes/STRUCTURAL_VERIFICATION.json",

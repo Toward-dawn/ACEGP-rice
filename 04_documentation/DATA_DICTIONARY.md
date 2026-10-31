@@ -32,3 +32,6 @@ The 51-gene complete evidence table is the public combined view. Its redundant e
 Quality subsets retain the original QC classifications and excluded IDs. Genetic-group CV retains the original group labels. The blind-masking and panel-matching QC records describe the original processing/design stage, not a new assessment of the reconstructed matrices.
 
 Current validation summaries: 20-repeat GW r = 0.4247689443312437; QTL r = 0.45063304524948833; 19/20 positive gains. Fixed-split random comparison: real QTL r = 0.46144864308919187; GW r = 0.43400406569902605; 7/100 random panels at or above the real panel, conditional fraction 8/101. Full-precision selection and quality-subset summaries are in `prediction_results/rebuilt_summaries/`. Hit-rate differences in its CSV files are proportions; multiply by 100 only when reporting percentage points.
+
+## Anther table provenance
+The SNP correspondence and 51-gene evidence tables use the registered validation QTL genotype matrix and publication region-name mapping. Their validation allele frequency and heterozygosity summaries are calculated from that matrix.
