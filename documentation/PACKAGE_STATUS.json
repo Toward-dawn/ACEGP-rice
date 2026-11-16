@@ -9,7 +9,7 @@
   "data_creators_confirmed": false,
   "third_party_redistribution_terms_fully_verified": false,
   "public_release_ready": false,
-  "companion_data_final_packaging": "HELD_BY_AUTHOR_REQUEST",
+  "companion_data_final_packaging": "LOCAL_REVIEW_COPY_PENDING_RIGHTS_AND_METADATA",
   "core_scientific_source_modified": false,
   "training_runs_during_packaging": 0,
   "scientific_analyses_during_packaging": 0,
@@ -20,5 +20,6 @@
   "optional_generation_inputs_included": false,
   "archived_prediction_tolerance_pp": 1e-08,
   "full_training_rerun_of_packaged_interface": false,
+  "historical_integration_scope": "The preceding boolean refers to the historical packaging check; see CURRENT_STATUS.md for later verification and current review scope.",
   "validation_data_label": "validation-imputed-v1"
 }

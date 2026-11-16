@@ -1,5 +1,7 @@
 # Execution guide
 
+Historical file prefixes such as `remote_` and `fixed9_` are retained because the registered workflows and dependency checks reference them. They do not themselves require a remote server and do not change the registered eight/seven-region analysis. `legacy_model_snapshot` contains required model code, not a disposable backup. See [current review status](CURRENT_STATUS.md) for the verification scope.
+
 ## Input and output rules
 
 Use the companion data matching code version `v1.0.0`. Extract `02_data/` at the repository root. Internal `development` labels refer to the primary population. All outputs must be outside the repository. Prediction fitting requires Linux/POSIX, the pinned Python dependencies and sufficient memory and disk for the frozen cache settings.
@@ -45,14 +47,18 @@ Repeat quality analysis with `--subset 142` and a different output directory. Bo
 
 Validation controls refit GBLUP and RKHS for both genome-only and genome-plus-QTL representations, together with ACEGP without block features. Primary controls retain the existing workflow and reuse their unchanged archived genome-only control predictions. The frozen fitting algorithms, grids and seeds are unchanged.
 
-## Fixed random panels
+## Original fixed-split random-panel comparison
 
 ```bash
 python -B code/ACEGP/run_analysis.py --analysis validation-random --all-panels --all-folds --output /path/to/validation-random
 python -B code/ACEGP/run_analysis.py --analysis validation-random --all-panels --summarize --output /path/to/validation-random
 ```
 
-`validation-random` includes real panel 0 and random panels 1–100. Use `--analysis primary-random` for the 100 primary panels. `--panel N --all-folds` selects one panel. All random-panel comparisons use prespecified repeat 1, with five folds per panel. They do not perform 20 repeats per panel or generate new panels.
+`validation-random` includes the real panel and random panels 1–100. Use `--analysis primary-random` for the primary population. `--panel N --all-folds` selects one panel. These commands implement the original fixed-split comparison: every panel is evaluated once on the prespecified first fivefold split. They do not perform 20 repeats per panel or generate new panels.
+
+## Sparse-background random-region comparison (saved results)
+
+The companion data package also contains the **sparse-background random-region comparison**: 100 random panels per population, each evaluated over 20 repeated fivefold splits. The existing directory aliases `low_density` and `low_density_20x5` refer to this experiment. The final panel definitions and marker-level manifest are under `02_data/random_controls/low_density_20x5/panels/`; repeat-level predictions and summaries remain under the registered sparse-panel result directories. The current `primary-random` and `validation-random` entry points do not implement this 100-panel × 20-repeat workflow; the presence of its saved results must not be taken as evidence that the release code can rerun that experiment.
 
 ## Statistics
 
@@ -70,6 +76,33 @@ python -B code/anther/prepare_workspace.py --output /path/to/anther-work
 ```
 
 Workspace preparation copies existing inputs. `review_anther.R` performs expression and functional analyses, `map_gene_snps.py` maps genes to markers. 
+
+## Common high-density background comparison
+
+The **common high-density background comparison** is a saved-result analysis. The
+existing aliases `highdensity` and `high_density_common_background` refer to the same
+result namespace. Its fold predictions and audit records are in the companion data
+package under `02_data/prediction_results/high_density_common_background/`. It compares
+genome-wide and QTL-informed representations under a shared high-density background.
+The bootstrap scripts in
+`code/high_density/` operate on fixed out-of-fold predictions and do not retrain models.
+
+For an independent audit of a copied result directory:
+
+```bash
+python -B code/high_density/final_audit.py \
+  --results-root /path/to/highdensity-results \
+  --output /path/to/audit/final_audit.json
+python -B code/high_density/final_audit_round2.py \
+  --results-root /path/to/highdensity-results \
+  --inputs-root /path/to/02_data/prediction_inputs \
+  --output /path/to/audit/final_audit_round2.json
+python -B code/high_density/bootstrap_material_level.py \
+  --results-root /path/to/highdensity-results \
+  --output-dir /path/to/bootstrap
+```
+
+These commands consume saved fold predictions. They do not fit a model.
 
 ## Verification scope
 

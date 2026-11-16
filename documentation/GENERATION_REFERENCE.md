@@ -1,6 +1,6 @@
 # Optional random-panel generation
 
-The fixed-split comparisons use the supplied 100 panels per population and their saved SNP row arrays. These panels can be used without regenerating candidate banks or selecting new panels.
+The original fixed-split random-panel comparison uses the supplied 100 panels per population and their saved SNP row arrays. Each panel is evaluated once on the prespecified first fivefold split. These panels can be used without regenerating candidate banks or selecting new panels. The additional sparse-background random-region comparison (100 panels per population × 20 repeated fivefold CV; existing aliases `low_density` and `low_density_20x5`) is saved in this companion package; this optional-generation document does not provide a rerun entry point for that experiment.
 
 Primary regeneration uses the included 241-sample BED/BIM/FAM and raw marker metadata. Validation regeneration additionally requires the historical pre-imputation `observed_A1_151.npy`, seven frozen 128-position candidate banks and their template. These generation inputs are not included. Their historical hashes are recorded in the registrations; final imputed genotypes are not substitutes.
 
