@@ -11,9 +11,9 @@ python -m pip install numpy pandas matplotlib scipy pillow
 With the companion `02_data/` directory at the repository root, run:
 
 ```bash
-python 'code/作图代码/figure3.py' --data 02_data/figure_source/Figure3 --output /path/to/figure3
-python 'code/作图代码/figure4.py' --data 02_data/figure_source/Figure4 --output /path/to/figure4
-python 'code/作图代码/figure5.py' --data 02_data/figure_source/Figure5 --output /path/to/figure5
+python code/figures/figure3.py --data 02_data/figure_source/Figure3 --output /path/to/figure3
+python code/figures/figure4.py --data 02_data/figure_source/Figure4 --output /path/to/figure4
+python code/figures/figure5.py --data 02_data/figure_source/Figure5 --output /path/to/figure5
 ```
 
 The scripts write PDF, SVG and PNG; Figure 3 also writes TIFF. Fonts may differ across systems. These commands draw existing results and do not fit models.

@@ -11,7 +11,7 @@ Required companion-data paths:
 - `02_data/random_controls/validation/genotypes/a1_is_ref.npy`, `reference_byte.npy`, `alternate_byte.npy`: allele orientation.
 - `02_data/prediction_inputs/validation_inputs/background.npy` and `qtl.npy`: float64 arrays, 151 × 32,666 and 151 × 67,104, extracted in the frozen marker order. Their SHA256 values match the arrays used in the accepted supporting rerun.
 
-All validation prediction branches use this version. The supplied 100 random panels are retained; prediction does not require panel regeneration. The matching input files are available locally. Distribution of the companion dataset is held for author and rights metadata; no public dataset DOI is asserted here.
+All validation prediction branches use this version. The supplied 100 random panels are retained; prediction does not require panel regeneration. The matching input files are distributed in the companion Zenodo dataset (`https://doi.org/10.5281/zenodo.23900534`).
 
 The original five-repeat blind-masking assessment, matching-QC records, genetic-group labels and quality-subset membership are retained as historical design evidence. They were not recomputed for the final imputed matrices. Historical receipts are stored separately under `02_data/random_controls/validation/metadata/historical_input_records/`.
 

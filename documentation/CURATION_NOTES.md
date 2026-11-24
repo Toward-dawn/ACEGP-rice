@@ -11,7 +11,7 @@
 
 The 16 files under `ACEGP/src` and `ACEGP/legacy_model_snapshot`, the model configuration, region IDs, sample order, folds and seeds retain their source bytes. The model library was not rewritten. Frozen primary results, anther data and optional panel-generation algorithms are unchanged.
 
-The completed validation reruns preceded this packaging step. Integration validation does not include new model training. A private copy can be updated with the prepared files; a public release still needs confirmed copyright attribution and the matching companion data record.
+The completed validation reruns preceded this packaging step. Integration validation does not include new model training. This public release pairs software `v1.0.0` (MIT License, Copyright (c) 2026 Anguo Gui) with the companion Zenodo dataset (`https://doi.org/10.5281/zenodo.23900534`).
 
 ## Earlier preparation
 

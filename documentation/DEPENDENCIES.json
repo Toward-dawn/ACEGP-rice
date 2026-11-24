@@ -412,8 +412,6 @@
     "02_data/prediction_results/repeated_cv/validation/summary.json",
     "02_data/prediction_results/shared_fit_diagnostics/development/COMPLETE.json",
     "02_data/prediction_results/shared_fit_diagnostics/development/all_oof_predictions.csv",
-    "02_data/prediction_results/shared_fit_diagnostics/validation/COMPLETE.json",
-    "02_data/prediction_results/shared_fit_diagnostics/validation/all_oof_predictions.csv",
     "02_data/prediction_results/statistics/dense_model_comparison.json",
     "02_data/prediction_results/statistics/development.json",
     "02_data/prediction_results/statistics/development_calibration.csv",
