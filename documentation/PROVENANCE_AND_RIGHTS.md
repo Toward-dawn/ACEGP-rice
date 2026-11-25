@@ -9,7 +9,7 @@ This inventory distinguishes file provenance from redistribution licensing. Orig
 | Anther counts and sample metadata | BioProject PRJNA1215770; ENA run metadata and 12-sample map under `anther/sources` and `anther/inputs` | Zhou et al. (2025), *Int J Mol Sci* 26:3161 (`https://doi.org/10.3390/ijms26073161`); NCBI SRA BioProject `PRJNA1215770`. Original source terms retained. |
 | Genome annotation and functional mappings | IRGSP-1.0 annotation filenames and versions; GFF and functional-membership inputs | IRGSP-1.0 reference genome, Kawahara et al. (2013), *Rice* 6:4 (`https://doi.org/10.1186/1939-8433-6-4`), and public RAP-DB / MSU functional annotations. Original provider terms retained. |
 | Curated QTL regions | Eight source links in `region_name_mapping.csv`; IRGSP-1.0 coordinates and unchanged region IDs | Curated from published heat-tolerance QTL literature cited in the accompanying manuscript and Table 2; distinctions between mapping sources and naming sources are preserved in `region_name_mapping.csv`. |
-| Study-created predictions, statistics, fixed panels and derived tables | Result files, registrations and figure source tables | Authors' original contributions (Anguo Gui, Zhicheng Cheng, Muhammad Anas, Jindian Sun, Yanrui Teng, Zhengjie Wang, Ashley Jones, and Youhong Song) licensed under CC BY 4.0. |
+| Study-created predictions, statistics, fixed panels and derived tables | Result files, registrations and figure source tables | Original contributions by the release creators (Anguo Gui and Youhong Song) licensed under CC BY 4.0. |
 
 Raw sequencing reads are referenced through original public archives rather than rehosted. Third-party terms continue to apply to all reused material.
 

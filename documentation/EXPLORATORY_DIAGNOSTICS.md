@@ -1,6 +1,6 @@
 # Exploratory diagnostics
 
-The frozen primary ACEGP code is unchanged. The companion dataset contains exploratory Table S3 results and anchor-screening audit tables under `02_data/prediction_results/exploratory_diagnostics/`. These are descriptive post hoc analyses and are not new significance tests.
+The main ACEGP code is unchanged. The companion dataset contains exploratory Table S3 results and anchor-screening audit tables under `02_data/prediction_results/exploratory_diagnostics/`. These are descriptive post hoc analyses and are not new significance tests.
 
 The audit export reads the registered `training_choices.json` for the 200 outer folds, without fitting models:
 

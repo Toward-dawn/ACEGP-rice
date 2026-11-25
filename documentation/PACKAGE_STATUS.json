@@ -6,14 +6,8 @@
   "code_licence": "MIT",
   "data_licence": "CC-BY-4.0 for original contributions",
   "software_creator": "Anguo Gui",
-  "manuscript_authors": [
+  "release_creators": [
     "Anguo Gui",
-    "Zhicheng Cheng",
-    "Muhammad Anas",
-    "Jindian Sun",
-    "Yanrui Teng",
-    "Zhengjie Wang",
-    "Ashley Jones",
     "Youhong Song"
   ],
   "copyright_holder_confirmed": true,

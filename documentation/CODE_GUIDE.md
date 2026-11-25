@@ -1,10 +1,10 @@
 # Execution guide
 
-Historical file prefixes such as `remote_` and `fixed9_` are retained because the registered workflows and dependency checks reference them. They do not themselves require a remote server and do not change the registered eight/seven-region analysis. `legacy_model_snapshot` contains required model code, not a disposable backup. See [current review status](CURRENT_STATUS.md) for the verification scope.
+Historical file prefixes such as `remote_` and `fixed9_` are retained because the registered workflows and dependency checks reference them. They do not themselves require a remote server and do not change the registered eight/seven-region analysis. `legacy_model_snapshot` contains required model code, not a disposable backup. See [release status](CURRENT_STATUS.md) for the verification scope.
 
 ## Input and output rules
 
-Use the companion data matching code version `v1.0.0`. Extract `02_data/` at the repository root. Internal `development` labels refer to the primary population. All outputs must be outside the repository. Prediction fitting requires Linux/POSIX, the pinned Python dependencies and sufficient memory and disk for the frozen cache settings.
+Use the companion data matching code version `v1.0.0`. Extract `02_data/` at the repository root. Internal `development` labels refer to the primary population. All outputs must be outside the repository. Prediction fitting requires Linux/POSIX, the pinned Python dependencies and sufficient memory and disk for the configured cache settings.
 
 ```bash
 python -B code/verify_release.py --code-only
@@ -45,7 +45,7 @@ python -B code/ACEGP/run_analysis.py --analysis genetic-group --population valid
 
 Repeat quality analysis with `--subset 142` and a different output directory. Both subsets retain their original independently selected members and restrict the original 151-accession folds to those members. Genetic-group CV uses the original five groups; it does not recluster the final imputed genotypes.
 
-Validation controls refit GBLUP and RKHS for both genome-only and genome-plus-QTL representations, together with ACEGP without block features. Primary controls retain the existing workflow and reuse their unchanged archived genome-only control predictions. The frozen fitting algorithms, grids and seeds are unchanged.
+Validation controls refit GBLUP and RKHS for both genome-only and genome-plus-QTL representations, together with ACEGP without block features. Primary controls retain the existing workflow and reuse their unchanged archived genome-only control predictions. The registered fitting algorithms, grids and seeds are unchanged.
 
 ## Original fixed-split random-panel comparison
 
